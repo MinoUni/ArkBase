@@ -11,3 +11,5 @@ databaseChangeLog:
       file: db/changelog/changesets/2024/07/15_2045__create-table-skills.sql
   - include:
       file: db/changelog/changesets/2024/07/15_2040__create-table-operators_skills.sql
+  - include:
+      file: db/changelog/changesets/2024/07/17_1635__change-rarity-column-type-in-table-operators.sql

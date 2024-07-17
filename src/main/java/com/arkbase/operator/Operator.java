@@ -1,9 +1,12 @@
 package com.arkbase.operator;
 
+import com.arkbase.converter.RarityConverter;
+import com.arkbase.enums.Rarity;
 import com.arkbase.material.Material;
 import com.arkbase.skill.Skill;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -33,8 +36,9 @@ public class Operator {
   @Column(nullable = false)
   private String archetype;
 
-  @Column(nullable = false)
-  private String rarity;
+  @Column(nullable = false, length = 2)
+  @Convert(converter = RarityConverter.class)
+  private Rarity rarity;
 
   @Column(nullable = false)
   private String trait;
