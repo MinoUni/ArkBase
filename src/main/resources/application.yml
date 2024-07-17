@@ -1,0 +1,24 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: ArkBase
+  liquibase:
+    enabled: true
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format-sql: true
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/arkbase
+    username: postgres
+    password: GroB@sT1K
+    hikari:
+      pool-name: Hikari
+      auto-commit: false
