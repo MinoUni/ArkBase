@@ -4,17 +4,8 @@ import com.arkbase.converter.RarityConverter;
 import com.arkbase.enums.Rarity;
 import com.arkbase.material.Material;
 import com.arkbase.skill.Skill;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.util.HashSet;
 import java.util.Set;
 import lombok.AllArgsConstructor;
@@ -43,8 +34,9 @@ public class Operator {
   @Column(nullable = false)
   private String trait;
 
-  @Column(nullable = false)
-  private String position;
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false, length = 6)
+  private Position position;
 
   @Column(name = "attack_type", nullable = false)
   private String attackType;
