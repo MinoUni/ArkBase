@@ -1,12 +1,25 @@
 package com.arkbase.operator;
 
 import com.arkbase.converter.RarityConverter;
+import com.arkbase.converter.SubclassConverter;
 import com.arkbase.enums.Rarity;
 import com.arkbase.material.Material;
 import com.arkbase.skill.Skill;
-import jakarta.persistence.*;
-
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -26,6 +39,10 @@ public class Operator {
 
   @Column(nullable = false)
   private String archetype;
+
+  @Column(nullable = false, length = 25)
+  @Convert(converter = SubclassConverter.class)
+  private Subclass subclass;
 
   @Column(nullable = false, length = 2)
   @Convert(converter = RarityConverter.class)
@@ -54,4 +71,20 @@ public class Operator {
       joinColumns = @JoinColumn(name = "operator_id"),
       inverseJoinColumns = @JoinColumn(name = "skill_id"))
   private Set<Skill> skills = new HashSet<>();
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Operator other)) {
+      return false;
+    }
+    return Objects.equals(id, other.id) && Objects.equals(codeName, other.codeName);
+  }
+
+  @Override
+  public int hashCode() {
+    return getClass().hashCode();
+  }
 }
