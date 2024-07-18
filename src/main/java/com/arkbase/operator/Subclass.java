@@ -67,7 +67,7 @@ public enum Subclass {
   FORTRESS("Fortress"),
   SENTINEL_GUARD("Sentinel Guard"),
   // * Vanguard
-  VANGUARD("Vanguard"),
+  AGENT("Agent"),
   PIONEER("Pioneer"),
   CHARGER("Charger"),
   TACTICIAN("Tactician"),
