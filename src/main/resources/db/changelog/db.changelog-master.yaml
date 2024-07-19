@@ -17,3 +17,5 @@ databaseChangeLog:
       file: db/changelog/changesets/2024/07/17_1710__change-column-type-position-in-table-operators.sql
   - include:
       file: db/changelog/changesets/2024/07/18_1912__add-column-subclass-table-operators.sql
+  - include:
+      file: db/changelog/changesets/2024/07/18_1932__change-columns-type-table-operators.sql

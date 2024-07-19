@@ -1,7 +1,9 @@
 package com.arkbase.operator;
 
+import com.arkbase.converter.ArchetypeConverter;
 import com.arkbase.converter.RarityConverter;
 import com.arkbase.converter.SubclassConverter;
+import com.arkbase.converter.TraitConverter;
 import com.arkbase.enums.Rarity;
 import com.arkbase.material.Material;
 import com.arkbase.skill.Skill;
@@ -34,11 +36,12 @@ public class Operator {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
-  @Column(name = "code_name", nullable = false, unique = true)
+  @Column(name = "code_name", nullable = false, unique = true, length = 50)
   private String codeName;
 
-  @Column(nullable = false)
-  private String archetype;
+  @Column(nullable = false, length = 10)
+  @Convert(converter = ArchetypeConverter.class)
+  private Archetype archetype;
 
   @Column(nullable = false, length = 25)
   @Convert(converter = SubclassConverter.class)
@@ -49,14 +52,16 @@ public class Operator {
   private Rarity rarity;
 
   @Column(nullable = false)
-  private String trait;
+  @Convert(converter = TraitConverter.class)
+  private Trait trait;
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false, length = 6)
   private Position position;
 
-  @Column(name = "attack_type", nullable = false)
-  private String attackType;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "attack_type", nullable = false, length = 8)
+  private AttackType attackType;
 
   @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   @JoinTable(
