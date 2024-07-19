@@ -1,23 +1,18 @@
 package com.arkbase.converter;
 
 import com.arkbase.operator.Subclass;
-import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
-import java.util.stream.Stream;
 
 @Converter
-public class SubclassConverter implements AttributeConverter<Subclass, String> {
+public class SubclassConverter extends CustomEnumConverter<Subclass, String> {
 
-  @Override
-  public String convertToDatabaseColumn(Subclass enumValue) {
-    return enumValue.getSubclass();
+  public SubclassConverter() {
+    super(Subclass.class);
   }
 
+  /** {@inheritDoc} */
   @Override
-  public Subclass convertToEntityAttribute(String dbData) {
-    return Stream.of(Subclass.values())
-        .filter(e -> e.getSubclass().equals(dbData))
-        .findFirst()
-        .orElseThrow(() -> new EnumConstantNotPresentException(Subclass.class, dbData));
+  public String convertToDatabaseColumn(Subclass enumConstant) {
+    return enumConstant.getSubclass();
   }
 }
