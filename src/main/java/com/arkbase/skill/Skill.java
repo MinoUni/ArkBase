@@ -5,6 +5,8 @@ import com.arkbase.operator.Operator;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,6 +15,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -30,7 +33,7 @@ public class Skill {
   @Column(unique = true, nullable = false)
   private String name;
 
-  @Column(nullable = false)
+  @Column(nullable = false, columnDefinition = "TEXT")
   private String description;
 
   @Column(name = "sp_cost", nullable = false)
@@ -42,11 +45,13 @@ public class Skill {
   @Column(nullable = false)
   private Integer mastery;
 
-  @Column(name = "recovery_type", nullable = false)
-  private String recoveryType;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "charge_type", nullable = false)
+  private ChargeType chargeType;
 
+  @Enumerated(EnumType.STRING)
   @Column(name = "activation_type", nullable = false)
-  private String activationType;
+  private ActivationType activationType;
 
   @Column(nullable = false)
   private Integer duration;
@@ -60,4 +65,20 @@ public class Skill {
       joinColumns = @JoinColumn(name = "skill_id"),
       inverseJoinColumns = @JoinColumn(name = "material_id"))
   private Set<Material> materials = new HashSet<>();
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Skill skill)) {
+      return false;
+    }
+    return Objects.equals(id, skill.id) && Objects.equals(name, skill.name);
+  }
+
+  @Override
+  public int hashCode() {
+    return getClass().hashCode();
+  }
 }
