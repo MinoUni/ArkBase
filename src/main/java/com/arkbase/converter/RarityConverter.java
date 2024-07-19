@@ -3,7 +3,7 @@ package com.arkbase.converter;
 import com.arkbase.enums.Rarity;
 import jakarta.persistence.Converter;
 
-@Converter
+@Converter(autoApply = true)
 public class RarityConverter extends CustomEnumConverter<Rarity, String> {
 
   public RarityConverter() {
