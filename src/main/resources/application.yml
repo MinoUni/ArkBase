@@ -4,7 +4,11 @@ spring:
   application:
     name: ArkBase
   liquibase:
+    url: ${DB_URL}
+    user: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
   jpa:
     properties:
       hibernate:
@@ -16,9 +20,9 @@ spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/arkbase
-    username: postgres
-    password: GroB@sT1K
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     hikari:
       pool-name: Hikari
       auto-commit: false
