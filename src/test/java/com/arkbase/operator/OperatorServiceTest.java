@@ -4,14 +4,17 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.arkbase.attribute.OperatorAttributes;
 import com.arkbase.utils.OperatorUtils;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -56,5 +59,20 @@ class OperatorServiceTest {
     verify(operatorRepository).existsByCodeName(eq(codeName));
     verify(operatorRepository).save(any(Operator.class));
     verify(operatorAttributesRepository).save(any(OperatorAttributes.class));
+  }
+
+  @Test
+  @DisplayName("should throw OperatorAlreadyExistsException when adding new operator")
+  void shouldThrowOperatorAlreadyExistsExceptionWhenAddOperator() {
+    OperatorCreationDTO newOperator = OperatorUtils.buildOperatorCreationDto();
+    final String codeName = newOperator.getCodeName();
+
+    when(operatorRepository.existsByCodeName(eq(codeName))).thenReturn(true);
+
+    assertThrows(RuntimeException.class, () -> operatorService.addOperator(newOperator));
+
+    verify(operatorRepository).existsByCodeName(eq(codeName));
+    verify(operatorRepository, never()).save(any(Operator.class));
+    verify(operatorAttributesRepository, never()).save(any(OperatorAttributes.class));
   }
 }
