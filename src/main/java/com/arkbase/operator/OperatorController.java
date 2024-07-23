@@ -1,6 +1,7 @@
 package com.arkbase.operator;
 
 import com.arkbase.assembler.OperatorModelAssembler;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -25,7 +26,7 @@ public class OperatorController {
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<EntityModel<OperatorDTO>> addOperator(
-      @RequestBody OperatorCreationDTO operatorDto) {
+      @Valid @RequestBody OperatorCreationDTO operatorDto) {
     EntityModel<OperatorDTO> operatorModel =
         assembler.toModel(operatorService.addOperator(operatorDto));
     return ResponseEntity.created(operatorModel.getRequiredLink(IanaLinkRelations.SELF).toUri())

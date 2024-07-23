@@ -1,5 +1,8 @@
 package com.arkbase.operator;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,19 +14,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OperatorAttributesDTO {
 
-  private Integer hp;
+  @NotNull @PositiveOrZero private Integer hp;
 
-  private Integer atk;
+  @NotNull @PositiveOrZero private Integer atk;
 
-  private Integer def;
+  @NotNull @PositiveOrZero private Integer def;
 
-  private Integer res;
+  @NotNull @PositiveOrZero private Integer res;
 
-  private Integer block;
+  @NotNull @PositiveOrZero private Integer block;
 
-  private Integer deploymentCost;
+  @NotNull @PositiveOrZero private Integer deploymentCost;
 
-  private String redeploymentTime;
+  @NotBlank private String redeploymentTime;
 
-  private String aspd;
+  @NotBlank private String aspd;
 }
