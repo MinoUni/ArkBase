@@ -115,7 +115,7 @@ public class Operator {
 
   public enum AttackType {
     PHYSICAL_DAMAGE,
-    ARTS_DAMAGE;
+    ARTS_DAMAGE
   }
 
   @Getter
