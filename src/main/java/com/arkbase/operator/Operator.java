@@ -82,6 +82,23 @@ public class Operator {
       inverseJoinColumns = @JoinColumn(name = "skill_id"))
   private Set<Skill> skills = new HashSet<>();
 
+  public Operator(
+      String codeName,
+      String archetype,
+      String subclass,
+      String rarity,
+      String trait,
+      String position,
+      String attackType) {
+    this.codeName = codeName;
+    this.archetype = Archetype.valueOf(archetype.toUpperCase());
+    this.subclass = Subclass.valueOf(subclass.toUpperCase());
+    this.rarity = Rarity.valueOf(rarity.toUpperCase());
+    this.trait = Trait.valueOf(trait.toUpperCase());
+    this.position = Position.valueOf(position.toUpperCase());
+    this.attackType = AttackType.valueOf(attackType.toUpperCase());
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {

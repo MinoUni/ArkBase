@@ -1,5 +1,6 @@
 package com.arkbase.utils;
 
+import com.arkbase.attribute.OperatorAttributes;
 import com.arkbase.enums.Rarity;
 import com.arkbase.operator.Operator;
 import com.arkbase.operator.OperatorAttributesDTO;
@@ -53,5 +54,20 @@ public class OperatorUtils {
                 .redeploymentTime("Long")
                 .build())
         .build();
+  }
+
+  public static Operator buildOperator() {
+    return new Operator(
+        "Ray",
+        Operator.Archetype.SNIPER.name(),
+        Operator.Subclass.HUNTER.name(),
+        Rarity.SIX_STAR.name(),
+        Operator.Trait.HUNTER.name(),
+        Operator.Position.RANGED.name(),
+        Operator.AttackType.PHYSICAL_DAMAGE.name());
+  }
+
+  public static OperatorAttributes buildOperatorAttributes() {
+    return new OperatorAttributes(2000, 1130, 200, 10, 1, 20, "Fast", "Long");
   }
 }
