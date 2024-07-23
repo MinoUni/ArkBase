@@ -1,5 +1,7 @@
 package com.arkbase.operator;
 
+import static com.arkbase.utils.OperatorUtils.buildOperatorCreationDto;
+import static com.arkbase.utils.OperatorUtils.buildOperatorDto;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.eq;
@@ -75,52 +77,5 @@ class OperatorControllerTest {
             jsonPath("$.subErrors.[*].field", containsInAnyOrder("rarity", "codeName")));
 
     verify(operatorService, never()).addOperator(eq(opCreation));
-  }
-
-  private OperatorCreationDTO buildOperatorCreationDto() {
-    return OperatorCreationDTO.builder()
-        .codeName("Ray")
-        .archetype(Operator.Archetype.SNIPER.getArchetype())
-        .subclass(Operator.Subclass.HUNTER.getSubclass())
-        .trait(Operator.Trait.HUNTER.name())
-        .rarity(Rarity.SIX_STAR.name())
-        .position(Operator.Position.RANGED.name())
-        .attackType(Operator.AttackType.PHYSICAL_DAMAGE.name())
-        .attributes(
-            OperatorAttributesDTO.builder()
-                .hp(2000)
-                .atk(1130)
-                .def(200)
-                .res(10)
-                .block(1)
-                .aspd("Fast")
-                .deploymentCost(20)
-                .redeploymentTime("Long")
-                .build())
-        .build();
-  }
-
-  private OperatorDTO buildOperatorDto() {
-    return OperatorDTO.builder()
-        .id(1)
-        .codeName("Ray")
-        .archetype(Operator.Archetype.SNIPER)
-        .subclass(Operator.Subclass.HUNTER)
-        .trait(Operator.Trait.HUNTER)
-        .rarity(Rarity.SIX_STAR)
-        .position(Operator.Position.RANGED)
-        .attackType(Operator.AttackType.PHYSICAL_DAMAGE)
-        .attributes(
-            OperatorAttributesDTO.builder()
-                .hp(2000)
-                .atk(1130)
-                .def(200)
-                .res(10)
-                .block(1)
-                .aspd("Fast")
-                .deploymentCost(20)
-                .redeploymentTime("Long")
-                .build())
-        .build();
   }
 }
