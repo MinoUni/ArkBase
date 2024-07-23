@@ -1,18 +1,18 @@
 package com.arkbase.converter;
 
-import com.arkbase.operator.Trait;
+import com.arkbase.operator.Operator;
 import jakarta.persistence.Converter;
 
 @Converter
-public class TraitConverter extends CustomEnumConverter<Trait, String> {
+public class TraitConverter extends CustomEnumConverter<Operator.Trait, String> {
 
   public TraitConverter() {
-    super(Trait.class);
+    super(Operator.Trait.class);
   }
 
   /** {@inheritDoc} */
   @Override
-  public String convertToDatabaseColumn(Trait enumConstant) {
+  public String convertToDatabaseColumn(Operator.Trait enumConstant) {
     return enumConstant.getTrait();
   }
 }
