@@ -1,6 +1,7 @@
 package com.arkbase.operator;
 
 import com.arkbase.attribute.OperatorAttributes;
+import com.arkbase.exception.OperatorAlreadyExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,13 +15,15 @@ public class OperatorService {
   private final OperatorAttributesRepository operatorAttributesRepository;
 
   @Transactional
-  public OperatorDTO addOperator(OperatorCreationDTO newOperator) {
-    if (operatorRepository.existsByCodeName(newOperator.getCodeName())) {
-      throw new RuntimeException();
+  public OperatorDTO addOperator(OperatorCreationDTO newOperator)
+      throws OperatorAlreadyExistsException {
+    final String codeName = newOperator.getCodeName();
+    if (operatorRepository.existsByCodeName(codeName)) {
+      throw new OperatorAlreadyExistsException(codeName);
     }
     Operator operator =
         new Operator(
-            newOperator.getCodeName(),
+            codeName,
             newOperator.getArchetype(),
             newOperator.getSubclass(),
             newOperator.getRarity(),

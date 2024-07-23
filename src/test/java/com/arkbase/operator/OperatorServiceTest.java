@@ -13,6 +13,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.arkbase.attribute.OperatorAttributes;
+import com.arkbase.exception.OperatorAlreadyExistsException;
 import com.arkbase.utils.OperatorUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -69,7 +70,11 @@ class OperatorServiceTest {
 
     when(operatorRepository.existsByCodeName(eq(codeName))).thenReturn(true);
 
-    assertThrows(RuntimeException.class, () -> operatorService.addOperator(newOperator));
+    var e =
+        assertThrows(
+            OperatorAlreadyExistsException.class, () -> operatorService.addOperator(newOperator));
+
+    assertEquals(String.format("Operator {%s} already exists!", codeName), e.getMessage());
 
     verify(operatorRepository).existsByCodeName(eq(codeName));
     verify(operatorRepository, never()).save(any(Operator.class));
