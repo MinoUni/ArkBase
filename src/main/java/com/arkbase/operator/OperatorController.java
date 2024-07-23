@@ -26,9 +26,9 @@ public class OperatorController {
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<EntityModel<OperatorDTO>> addOperator(
-      @Valid @RequestBody OperatorCreationDTO operatorDto) {
+      @Valid @RequestBody OperatorCreationDTO newOperator) {
     EntityModel<OperatorDTO> operatorModel =
-        assembler.toModel(operatorService.addOperator(operatorDto));
+        assembler.toModel(operatorService.addOperator(newOperator));
     return ResponseEntity.created(operatorModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
         .body(operatorModel);
   }
