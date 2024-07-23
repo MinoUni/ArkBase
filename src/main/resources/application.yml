@@ -12,7 +12,8 @@ spring:
   jpa:
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        connection:
+          provider-disables-autocommit: true
         format-sql: true
     show-sql: true
     hibernate:
