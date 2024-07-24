@@ -14,6 +14,7 @@ import static org.mockito.Mockito.when;
 
 import com.arkbase.attribute.OperatorAttributes;
 import com.arkbase.exception.OperatorAlreadyExistsException;
+import com.arkbase.mapper.OperatorMapper;
 import com.arkbase.utils.OperatorUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,24 +26,30 @@ class OperatorServiceTest {
 
   private final OperatorRepository operatorRepository = mock(OperatorRepository.class);
 
-  private final OperatorAttributesRepository operatorAttributesRepository =
+  private final OperatorAttributesRepository attributesRepository =
       mock(OperatorAttributesRepository.class);
 
+  private final OperatorMapper mapper = mock(OperatorMapper.class);
+
   private final OperatorService operatorService =
-      new OperatorService(operatorRepository, operatorAttributesRepository);
+      new OperatorService(operatorRepository, attributesRepository, mapper);
 
   @Test
   void shouldAddOperator() {
     OperatorCreationDTO newOperator = OperatorUtils.buildOperatorCreationDto();
+    final String codeName = newOperator.getCodeName();
     Operator operator = OperatorUtils.buildOperator();
     operator.setId(1);
-    OperatorAttributes operatorAttributes = OperatorUtils.buildOperatorAttributes();
-    final String codeName = newOperator.getCodeName();
+    OperatorAttributes attributes = OperatorUtils.buildOperatorAttributes();
+    OperatorAttributesDTO newAttributes = newOperator.getAttributes();
+    OperatorDTO opDto = OperatorUtils.buildOperatorDto();
 
     when(operatorRepository.existsByCodeName(eq(codeName))).thenReturn(false);
+    when(mapper.toOperator(eq(newOperator))).thenReturn(operator);
+    when(mapper.toOperatorAttributes(eq(newAttributes))).thenReturn(attributes);
     when(operatorRepository.save(any(Operator.class))).thenReturn(operator);
-    when(operatorAttributesRepository.save(any(OperatorAttributes.class)))
-        .thenReturn(operatorAttributes);
+    when(attributesRepository.save(any(OperatorAttributes.class))).thenReturn(attributes);
+    when(mapper.toOperatorDto(eq(operator), eq(attributes))).thenReturn(opDto);
 
     OperatorDTO operatorDTO = assertDoesNotThrow(() -> operatorService.addOperator(newOperator));
 
@@ -54,12 +61,15 @@ class OperatorServiceTest {
           assertEquals(newOperator.getCodeName(), operatorDTO.getCodeName());
           assertEquals(
               Operator.Archetype.SNIPER.getArchetype(), operatorDTO.getArchetype().getArchetype());
-          assertEquals(newOperator.getAttributes().getAtk(), operatorDTO.getAttributes().getAtk());
+          assertEquals(newAttributes.getAtk(), operatorDTO.getAttributes().getAtk());
         });
 
     verify(operatorRepository).existsByCodeName(eq(codeName));
+    verify(mapper).toOperator(eq(newOperator));
+    verify(mapper).toOperatorAttributes(eq(newAttributes));
+    verify(mapper).toOperatorDto(eq(operator), eq(attributes));
     verify(operatorRepository).save(any(Operator.class));
-    verify(operatorAttributesRepository).save(any(OperatorAttributes.class));
+    verify(attributesRepository).save(any(OperatorAttributes.class));
   }
 
   @Test
@@ -70,14 +80,17 @@ class OperatorServiceTest {
 
     when(operatorRepository.existsByCodeName(eq(codeName))).thenReturn(true);
 
-    var e =
+    OperatorAlreadyExistsException e =
         assertThrows(
             OperatorAlreadyExistsException.class, () -> operatorService.addOperator(newOperator));
 
     assertEquals(String.format("Operator {%s} already exists!", codeName), e.getMessage());
 
     verify(operatorRepository).existsByCodeName(eq(codeName));
+    verify(mapper, never()).toOperator(eq(newOperator));
+    verify(mapper, never()).toOperatorAttributes(eq(newOperator.getAttributes()));
+    verify(mapper, never()).toOperatorDto(any(Operator.class), any(OperatorAttributes.class));
     verify(operatorRepository, never()).save(any(Operator.class));
-    verify(operatorAttributesRepository, never()).save(any(OperatorAttributes.class));
+    verify(attributesRepository, never()).save(any(OperatorAttributes.class));
   }
 }

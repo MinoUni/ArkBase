@@ -2,6 +2,7 @@ package com.arkbase.operator;
 
 import com.arkbase.attribute.OperatorAttributes;
 import com.arkbase.exception.OperatorAlreadyExistsException;
+import com.arkbase.mapper.OperatorMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +14,7 @@ public class OperatorService {
 
   private final OperatorRepository operatorRepository;
   private final OperatorAttributesRepository operatorAttributesRepository;
+  private final OperatorMapper mapper;
 
   @Transactional
   public OperatorDTO addOperator(OperatorCreationDTO newOperator)
@@ -21,54 +23,13 @@ public class OperatorService {
     if (operatorRepository.existsByCodeName(codeName)) {
       throw new OperatorAlreadyExistsException(codeName);
     }
-    Operator operator =
-        new Operator(
-            codeName,
-            newOperator.getArchetype(),
-            newOperator.getSubclass(),
-            newOperator.getRarity(),
-            newOperator.getTrait(),
-            newOperator.getPosition(),
-            newOperator.getAttackType());
-
+    Operator operator = mapper.toOperator(newOperator);
     operator = operatorRepository.save(operator);
-    var atr = newOperator.getAttributes();
 
-    OperatorAttributes operatorAttributes =
-        new OperatorAttributes(
-            atr.getHp(),
-            atr.getAtk(),
-            atr.getDef(),
-            atr.getRes(),
-            atr.getBlock(),
-            atr.getDeploymentCost(),
-            atr.getRedeploymentTime(),
-            atr.getAspd());
+    OperatorAttributes attributes = mapper.toOperatorAttributes(newOperator.getAttributes());
+    attributes.setOperator(operator);
+    attributes = operatorAttributesRepository.save(attributes);
 
-    operatorAttributes.setOperator(operator);
-    operatorAttributes = operatorAttributesRepository.save(operatorAttributes);
-
-    return OperatorDTO.builder()
-        .id(operator.getId())
-        .codeName(operator.getCodeName())
-        .archetype(operator.getArchetype())
-        .subclass(operator.getSubclass())
-        .rarity(operator.getRarity())
-        .trait(operator.getTrait())
-        .attackType(operator.getAttackType())
-        .position(operator.getPosition())
-        .attackType(operator.getAttackType())
-        .attributes(
-            OperatorAttributesDTO.builder()
-                .hp(operatorAttributes.getHp())
-                .atk(operatorAttributes.getAtk())
-                .def(operatorAttributes.getDef())
-                .res(operatorAttributes.getRes())
-                .block(operatorAttributes.getBlock())
-                .deploymentCost(operatorAttributes.getDeploymentCost())
-                .redeploymentTime(operatorAttributes.getRedeploymentTime())
-                .aspd(operatorAttributes.getAspd())
-                .build())
-        .build();
+    return mapper.toOperatorDto(operator, attributes);
   }
 }
