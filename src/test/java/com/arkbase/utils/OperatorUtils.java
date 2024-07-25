@@ -12,8 +12,8 @@ public class OperatorUtils {
   public static OperatorCreationDTO buildOperatorCreationDto() {
     return OperatorCreationDTO.builder()
         .codeName("Ray")
-        .archetype(Operator.Archetype.SNIPER.getArchetype())
-        .subclass(Operator.Subclass.HUNTER.getSubclass())
+        .archetype(Operator.Archetype.SNIPER.name())
+        .subclass(Operator.Subclass.HUNTER.name())
         .trait(Operator.Trait.HUNTER.name())
         .rarity(Rarity.SIX_STAR.name())
         .position(Operator.Position.RANGED.name())
