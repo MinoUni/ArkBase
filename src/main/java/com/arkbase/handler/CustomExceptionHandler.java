@@ -1,8 +1,8 @@
-package com.arkbase.exception;
+package com.arkbase.handler;
 
-import com.arkbase.dto.ApiError;
-import com.arkbase.dto.SubError;
 import java.util.List;
+
+import com.arkbase.exception.OperatorAlreadyExistsException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;

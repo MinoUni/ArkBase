@@ -1,4 +1,4 @@
-package com.arkbase.dto;
+package com.arkbase.handler;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
