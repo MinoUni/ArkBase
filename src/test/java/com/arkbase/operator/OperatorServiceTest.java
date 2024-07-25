@@ -44,7 +44,7 @@ class OperatorServiceTest {
     OperatorAttributesDTO newAttributes = newOperator.getAttributes();
     OperatorDTO opDto = OperatorUtils.buildOperatorDto();
 
-    when(operatorRepository.existsByCodeName(eq(codeName))).thenReturn(false);
+    when(operatorRepository.existsByCodeNameIgnoreCase(eq(codeName))).thenReturn(false);
     when(mapper.toOperator(eq(newOperator))).thenReturn(operator);
     when(mapper.toOperatorAttributes(eq(newAttributes))).thenReturn(attributes);
     when(operatorRepository.save(any(Operator.class))).thenReturn(operator);
@@ -64,7 +64,7 @@ class OperatorServiceTest {
           assertEquals(newAttributes.getAtk(), operatorDTO.getAttributes().getAtk());
         });
 
-    verify(operatorRepository).existsByCodeName(eq(codeName));
+    verify(operatorRepository).existsByCodeNameIgnoreCase(eq(codeName));
     verify(mapper).toOperator(eq(newOperator));
     verify(mapper).toOperatorAttributes(eq(newAttributes));
     verify(mapper).toOperatorDto(eq(operator), eq(attributes));
@@ -78,7 +78,7 @@ class OperatorServiceTest {
     OperatorCreationDTO newOperator = OperatorUtils.buildOperatorCreationDto();
     final String codeName = newOperator.getCodeName();
 
-    when(operatorRepository.existsByCodeName(eq(codeName))).thenReturn(true);
+    when(operatorRepository.existsByCodeNameIgnoreCase(eq(codeName))).thenReturn(true);
 
     OperatorAlreadyExistsException e =
         assertThrows(
@@ -86,7 +86,7 @@ class OperatorServiceTest {
 
     assertEquals(String.format("Operator {%s} already exists!", codeName), e.getMessage());
 
-    verify(operatorRepository).existsByCodeName(eq(codeName));
+    verify(operatorRepository).existsByCodeNameIgnoreCase(eq(codeName));
     verify(mapper, never()).toOperator(eq(newOperator));
     verify(mapper, never()).toOperatorAttributes(eq(newOperator.getAttributes()));
     verify(mapper, never()).toOperatorDto(any(Operator.class), any(OperatorAttributes.class));

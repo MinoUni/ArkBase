@@ -2,6 +2,7 @@ package com.arkbase.operator;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.arkbase.attribute.OperatorAttributes;
@@ -21,16 +22,18 @@ class OperatorRepositoryTest {
   @Autowired private OperatorAttributesRepository attributesRepository;
 
   @Test
-  void shouldSaveOperator() {
+  void shouldSaveNewOperator() {
     Operator operator = OperatorUtils.buildOperator();
     OperatorAttributes attributes = OperatorUtils.buildOperatorAttributes();
     attributes.setOperator(operator);
 
+    boolean result = operatorRepository.existsByCodeNameIgnoreCase(operator.getCodeName());
     Operator savedOp = operatorRepository.save(operator);
     OperatorAttributes savedAttributes = attributesRepository.save(attributes);
 
     assertAll(
         () -> {
+          assertFalse(result);
           assertNotNull(savedOp);
           assertNotNull(savedAttributes);
           assertEquals(operator, savedAttributes.getOperator());

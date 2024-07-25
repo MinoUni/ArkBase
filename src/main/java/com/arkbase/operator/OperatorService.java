@@ -13,14 +13,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class OperatorService {
 
   private final OperatorRepository operatorRepository;
-  private final OperatorAttributesRepository operatorAttributesRepository;
+  private final OperatorAttributesRepository attributesRepository;
   private final OperatorMapper mapper;
 
   @Transactional
   public OperatorDTO addOperator(OperatorCreationDTO newOperator)
       throws OperatorAlreadyExistsException {
     final String codeName = newOperator.getCodeName();
-    if (operatorRepository.existsByCodeName(codeName)) {
+    if (operatorRepository.existsByCodeNameIgnoreCase(codeName)) {
       throw new OperatorAlreadyExistsException(codeName);
     }
     Operator operator = mapper.toOperator(newOperator);
@@ -28,7 +28,7 @@ public class OperatorService {
 
     OperatorAttributes attributes = mapper.toOperatorAttributes(newOperator.getAttributes());
     attributes.setOperator(operator);
-    attributes = operatorAttributesRepository.save(attributes);
+    attributes = attributesRepository.save(attributes);
 
     return mapper.toOperatorDto(operator, attributes);
   }

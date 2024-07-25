@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OperatorRepository extends JpaRepository<Operator, Integer> {
 
-    boolean existsByCodeName(String codeName);
+  boolean existsByCodeNameIgnoreCase(String codeName);
 }
