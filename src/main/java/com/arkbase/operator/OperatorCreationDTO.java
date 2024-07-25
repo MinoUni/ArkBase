@@ -2,6 +2,7 @@ package com.arkbase.operator;
 
 import com.arkbase.annotation.ValueOfEnum;
 import com.arkbase.enums.Rarity;
+import com.arkbase.operator.enums.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,22 +17,22 @@ public class OperatorCreationDTO {
 
   @NotBlank private String codeName;
 
-  @ValueOfEnum(enumClass = Operator.Archetype.class)
+  @ValueOfEnum(enumClass = Archetype.class)
   private String archetype;
 
-  @ValueOfEnum(enumClass = Operator.Subclass.class)
+  @ValueOfEnum(enumClass = Subclass.class)
   private String subclass;
 
   @ValueOfEnum(enumClass = Rarity.class)
   private String rarity;
 
-  @ValueOfEnum(enumClass = Operator.Trait.class)
+  @ValueOfEnum(enumClass = Trait.class)
   private String trait;
 
-  @ValueOfEnum(enumClass = Operator.Position.class)
+  @ValueOfEnum(enumClass = Position.class)
   private String position;
 
-  @ValueOfEnum(enumClass = Operator.AttackType.class)
+  @ValueOfEnum(enumClass = AttackType.class)
   private String attackType;
 
   private OperatorAttributesDTO attributes;

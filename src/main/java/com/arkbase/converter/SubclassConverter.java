@@ -1,18 +1,18 @@
 package com.arkbase.converter;
 
-import com.arkbase.operator.Operator;
+import com.arkbase.operator.enums.Subclass;
 import jakarta.persistence.Converter;
 
 @Converter
-public class SubclassConverter extends CustomEnumConverter<Operator.Subclass, String> {
+public class SubclassConverter extends CustomEnumConverter<Subclass, String> {
 
   public SubclassConverter() {
-    super(Operator.Subclass.class);
+    super(Subclass.class);
   }
 
   /** {@inheritDoc} */
   @Override
-  public String convertToDatabaseColumn(Operator.Subclass enumConstant) {
+  public String convertToDatabaseColumn(Subclass enumConstant) {
     return enumConstant.getSubclass();
   }
 }

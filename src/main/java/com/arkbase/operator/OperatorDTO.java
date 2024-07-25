@@ -1,6 +1,7 @@
 package com.arkbase.operator;
 
 import com.arkbase.enums.Rarity;
+import com.arkbase.operator.enums.*;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,20 +19,20 @@ public class OperatorDTO {
   private String codeName;
 
   @JsonUnwrapped
-  private Operator.Archetype archetype;
+  private Archetype archetype;
 
   @JsonUnwrapped
-  private Operator.Subclass subclass;
+  private Subclass subclass;
 
   @JsonUnwrapped
-  private Operator.Trait trait;
+  private Trait trait;
 
   @JsonUnwrapped
   private Rarity rarity;
 
-  private Operator.Position position;
+  private Position position;
 
-  private Operator.AttackType attackType;
+  private AttackType attackType;
 
   private OperatorAttributesDTO attributes;
 }

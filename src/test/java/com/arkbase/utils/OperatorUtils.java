@@ -6,18 +6,23 @@ import com.arkbase.operator.Operator;
 import com.arkbase.operator.OperatorAttributesDTO;
 import com.arkbase.operator.OperatorCreationDTO;
 import com.arkbase.operator.OperatorDTO;
+import com.arkbase.operator.enums.Archetype;
+import com.arkbase.operator.enums.AttackType;
+import com.arkbase.operator.enums.Position;
+import com.arkbase.operator.enums.Subclass;
+import com.arkbase.operator.enums.Trait;
 
 public class OperatorUtils {
 
   public static OperatorCreationDTO buildOperatorCreationDto() {
     return OperatorCreationDTO.builder()
         .codeName("Ray")
-        .archetype(Operator.Archetype.SNIPER.name())
-        .subclass(Operator.Subclass.HUNTER.name())
-        .trait(Operator.Trait.HUNTER.name())
+        .archetype(Archetype.SNIPER.name())
+        .subclass(Subclass.HUNTER.name())
+        .trait(Trait.HUNTER.name())
         .rarity(Rarity.SIX_STAR.name())
-        .position(Operator.Position.RANGED.name())
-        .attackType(Operator.AttackType.PHYSICAL_DAMAGE.name())
+        .position(Position.RANGED.name())
+        .attackType(AttackType.PHYSICAL_DAMAGE.name())
         .attributes(
             OperatorAttributesDTO.builder()
                 .hp(2000)
@@ -36,12 +41,12 @@ public class OperatorUtils {
     return OperatorDTO.builder()
         .id(1)
         .codeName("Ray")
-        .archetype(Operator.Archetype.SNIPER)
-        .subclass(Operator.Subclass.HUNTER)
-        .trait(Operator.Trait.HUNTER)
+        .archetype(Archetype.SNIPER)
+        .subclass(Subclass.HUNTER)
+        .trait(Trait.HUNTER)
         .rarity(Rarity.SIX_STAR)
-        .position(Operator.Position.RANGED)
-        .attackType(Operator.AttackType.PHYSICAL_DAMAGE)
+        .position(Position.RANGED)
+        .attackType(AttackType.PHYSICAL_DAMAGE)
         .attributes(
             OperatorAttributesDTO.builder()
                 .hp(2000)
@@ -59,12 +64,12 @@ public class OperatorUtils {
   public static Operator buildOperator() {
     return new Operator(
         "Ray",
-        Operator.Archetype.SNIPER.name(),
-        Operator.Subclass.HUNTER.name(),
+        Archetype.SNIPER.name(),
+        Subclass.HUNTER.name(),
         Rarity.SIX_STAR.name(),
-        Operator.Trait.HUNTER.name(),
-        Operator.Position.RANGED.name(),
-        Operator.AttackType.PHYSICAL_DAMAGE.name());
+        Trait.HUNTER.name(),
+        Position.RANGED.name(),
+        AttackType.PHYSICAL_DAMAGE.name());
   }
 
   public static OperatorAttributes buildOperatorAttributes() {

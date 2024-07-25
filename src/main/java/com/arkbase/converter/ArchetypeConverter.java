@@ -1,18 +1,18 @@
 package com.arkbase.converter;
 
-import com.arkbase.operator.Operator;
+import com.arkbase.operator.enums.Archetype;
 import jakarta.persistence.Converter;
 
 @Converter
-public class ArchetypeConverter extends CustomEnumConverter<Operator.Archetype, String> {
+public class ArchetypeConverter extends CustomEnumConverter<Archetype, String> {
 
   public ArchetypeConverter() {
-    super(Operator.Archetype.class);
+    super(Archetype.class);
   }
 
   /** {@inheritDoc} */
   @Override
-  public String convertToDatabaseColumn(Operator.Archetype enumConstant) {
+  public String convertToDatabaseColumn(Archetype enumConstant) {
     return enumConstant.getArchetype();
   }
 }

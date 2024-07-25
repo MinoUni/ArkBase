@@ -15,6 +15,7 @@ import static org.mockito.Mockito.when;
 import com.arkbase.attribute.OperatorAttributes;
 import com.arkbase.exception.OperatorAlreadyExistsException;
 import com.arkbase.mapper.OperatorMapper;
+import com.arkbase.operator.enums.Archetype;
 import com.arkbase.utils.OperatorUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -59,8 +60,7 @@ class OperatorServiceTest {
           assertNotNull(operatorDTO.getAttributes());
           assertEquals(1, operatorDTO.getId());
           assertEquals(newOperator.getCodeName(), operatorDTO.getCodeName());
-          assertEquals(
-              Operator.Archetype.SNIPER.getArchetype(), operatorDTO.getArchetype().getArchetype());
+          assertEquals(Archetype.SNIPER.getArchetype(), operatorDTO.getArchetype().getArchetype());
           assertEquals(newAttributes.getAtk(), operatorDTO.getAttributes().getAtk());
         });
 
