@@ -1,6 +1,5 @@
 package com.arkbase.operator;
 
-import com.arkbase.attribute.OperatorAttributes;
 import com.arkbase.exception.OperatorAlreadyExistsException;
 import com.arkbase.mapper.OperatorMapper;
 import lombok.RequiredArgsConstructor;
@@ -23,13 +22,10 @@ public class OperatorService {
     if (operatorRepository.existsByCodeNameIgnoreCase(codeName)) {
       throw new OperatorAlreadyExistsException(codeName);
     }
-    Operator operator = mapper.toOperator(newOperator);
-    operator = operatorRepository.save(operator);
-
-    OperatorAttributes attributes = mapper.toOperatorAttributes(newOperator.getAttributes());
+    var operator = operatorRepository.save(mapper.toOperator(newOperator));
+    var attributes = mapper.toOperatorAttributes(newOperator.getAttributes());
     attributes.setOperator(operator);
     attributes = attributesRepository.save(attributes);
-
     return mapper.toOperatorDto(operator, attributes);
   }
 }
