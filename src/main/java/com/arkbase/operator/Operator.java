@@ -139,6 +139,7 @@ public class Operator {
 
   @Getter
   @RequiredArgsConstructor
+  @JsonFormat(shape = JsonFormat.Shape.OBJECT)
   public enum Subclass {
     // * Caster class
     CORE_CASTER("Core Caster"),
