@@ -27,13 +27,9 @@ class OperatorServiceTest {
 
   private final OperatorRepository operatorRepository = mock(OperatorRepository.class);
 
-  private final OperatorAttributesRepository attributesRepository =
-      mock(OperatorAttributesRepository.class);
-
   private final OperatorMapper mapper = mock(OperatorMapper.class);
 
-  private final OperatorService operatorService =
-      new OperatorService(operatorRepository, attributesRepository, mapper);
+  private final OperatorService operatorService = new OperatorService(operatorRepository, mapper);
 
   @Test
   void shouldAddOperator() {
@@ -49,7 +45,6 @@ class OperatorServiceTest {
     when(mapper.toOperator(eq(newOperator))).thenReturn(operator);
     when(mapper.toOperatorAttributes(eq(newAttributes))).thenReturn(attributes);
     when(operatorRepository.save(any(Operator.class))).thenReturn(operator);
-    when(attributesRepository.save(any(OperatorAttributes.class))).thenReturn(attributes);
     when(mapper.toOperatorDto(eq(operator), eq(attributes))).thenReturn(opDto);
 
     OperatorDTO operatorDTO = assertDoesNotThrow(() -> operatorService.addOperator(newOperator));
@@ -69,7 +64,6 @@ class OperatorServiceTest {
     verify(mapper).toOperatorAttributes(eq(newAttributes));
     verify(mapper).toOperatorDto(eq(operator), eq(attributes));
     verify(operatorRepository).save(any(Operator.class));
-    verify(attributesRepository).save(any(OperatorAttributes.class));
   }
 
   @Test
@@ -91,6 +85,5 @@ class OperatorServiceTest {
     verify(mapper, never()).toOperatorAttributes(eq(newOperator.getAttributes()));
     verify(mapper, never()).toOperatorDto(any(Operator.class), any(OperatorAttributes.class));
     verify(operatorRepository, never()).save(any(Operator.class));
-    verify(attributesRepository, never()).save(any(OperatorAttributes.class));
   }
 }
