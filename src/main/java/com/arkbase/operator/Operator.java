@@ -7,6 +7,7 @@ import com.arkbase.converter.TraitConverter;
 import com.arkbase.enums.Rarity;
 import com.arkbase.material.Material;
 import com.arkbase.skill.Skill;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -117,6 +118,7 @@ public class Operator {
 
   @Getter
   @RequiredArgsConstructor
+  @JsonFormat(shape = JsonFormat.Shape.OBJECT)
   public enum Archetype {
     VANGUARD("Vanguard"),
     GUARD("Guard"),
@@ -209,8 +211,10 @@ public class Operator {
     private final String subclass;
   }
 
+//  ? Check if enum can be replaced by table or smth else
   @Getter
   @RequiredArgsConstructor
+  @JsonFormat(shape = JsonFormat.Shape.OBJECT)
   public enum Trait {
     // * Caster class subclasses
     CORE_CASTER("Attack deals [Arts damage]"),
