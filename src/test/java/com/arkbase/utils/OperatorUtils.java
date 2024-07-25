@@ -62,14 +62,15 @@ public class OperatorUtils {
   }
 
   public static Operator buildOperator() {
-    return new Operator(
-        "Ray",
-        Archetype.SNIPER.name(),
-        Subclass.HUNTER.name(),
-        Rarity.SIX_STAR.name(),
-        Trait.HUNTER.name(),
-        Position.RANGED.name(),
-        AttackType.PHYSICAL_DAMAGE.name());
+    return Operator.builder()
+        .codeName("Ray")
+        .archetype(Archetype.SNIPER)
+        .subclass(Subclass.HUNTER)
+        .rarity(Rarity.SIX_STAR)
+        .trait(Trait.HUNTER)
+        .position(Position.RANGED)
+        .attackType(AttackType.PHYSICAL_DAMAGE)
+        .build();
   }
 
   public static OperatorAttributes buildOperatorAttributes() {

@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class OperatorService {
 
   private final OperatorRepository operatorRepository;
-  private final OperatorAttributesRepository attributesRepository;
   private final OperatorMapper mapper;
 
   @Transactional
@@ -22,10 +21,9 @@ public class OperatorService {
     if (operatorRepository.existsByCodeNameIgnoreCase(codeName)) {
       throw new OperatorAlreadyExistsException(codeName);
     }
-    var operator = operatorRepository.save(mapper.toOperator(newOperator));
-    var attributes = mapper.toOperatorAttributes(newOperator.getAttributes());
-    attributes.setOperator(operator);
-    attributes = attributesRepository.save(attributes);
-    return mapper.toOperatorDto(operator, attributes);
+    var operator = mapper.toOperator(newOperator);
+    operator.addAttributes(mapper.toOperatorAttributes(newOperator.getAttributes()));
+    operator = operatorRepository.save(operator);
+    return mapper.toOperatorDto(operator, operator.getAttributes());
   }
 }

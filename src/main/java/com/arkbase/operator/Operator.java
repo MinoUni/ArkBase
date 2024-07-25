@@ -1,12 +1,17 @@
 package com.arkbase.operator;
 
+import com.arkbase.attribute.OperatorAttributes;
 import com.arkbase.converter.ArchetypeConverter;
 import com.arkbase.converter.RarityConverter;
 import com.arkbase.converter.SubclassConverter;
 import com.arkbase.converter.TraitConverter;
 import com.arkbase.enums.Rarity;
 import com.arkbase.material.Material;
-import com.arkbase.operator.enums.*;
+import com.arkbase.operator.enums.Archetype;
+import com.arkbase.operator.enums.AttackType;
+import com.arkbase.operator.enums.Position;
+import com.arkbase.operator.enums.Subclass;
+import com.arkbase.operator.enums.Trait;
 import com.arkbase.skill.Skill;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -20,17 +25,22 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -68,12 +78,9 @@ public class Operator {
   @Column(name = "attack_type", nullable = false, length = 8)
   private AttackType attackType;
 
-  @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-  @JoinTable(
-      name = "operators_materials",
-      joinColumns = @JoinColumn(name = "operator_id"),
-      inverseJoinColumns = @JoinColumn(name = "material_id"))
-  private Set<Material> materials = new HashSet<>();
+  @Setter(AccessLevel.NONE)
+  @OneToOne(mappedBy = "operator", cascade = CascadeType.ALL, orphanRemoval = true)
+  private OperatorAttributes attributes;
 
   @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   @JoinTable(
@@ -97,6 +104,17 @@ public class Operator {
     this.trait = Trait.valueOf(trait.toUpperCase());
     this.position = Position.valueOf(position.toUpperCase());
     this.attackType = AttackType.valueOf(attackType.toUpperCase());
+  public void addAttributes(OperatorAttributes attributes) {
+    this.attributes = attributes;
+    attributes.setOperator(this);
+  }
+
+  public void removeAttributes(OperatorAttributes attributes) {
+    if (attributes != null) {
+      attributes.setOperator(null);
+    }
+    this.attributes = null;
+  }
   }
 
   @Override
