@@ -31,7 +31,7 @@ public class OperatorIntTest {
 
   @Test
   void shouldAddOperator() throws Exception {
-    OperatorCreationDTO newOperator = OperatorUtils.buildOperatorCreationDto();
+    NewOperatorDTO newOperator = OperatorUtils.buildOperatorCreationDto();
     mvc.perform(
             post("/operators")
                 .contentType(MediaType.APPLICATION_JSON)

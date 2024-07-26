@@ -33,7 +33,7 @@ class OperatorServiceTest {
 
   @Test
   void shouldAddOperator() {
-    OperatorCreationDTO newOperator = OperatorUtils.buildOperatorCreationDto();
+    NewOperatorDTO newOperator = OperatorUtils.buildOperatorCreationDto();
     final String codeName = newOperator.getCodeName();
     Operator operator = OperatorUtils.buildOperator();
     operator.setId(1);
@@ -69,7 +69,7 @@ class OperatorServiceTest {
   @Test
   @DisplayName("should throw OperatorAlreadyExistsException when adding new operator")
   void shouldThrowOperatorAlreadyExistsExceptionWhenAddOperator() {
-    OperatorCreationDTO newOperator = OperatorUtils.buildOperatorCreationDto();
+    NewOperatorDTO newOperator = OperatorUtils.buildOperatorCreationDto();
     final String codeName = newOperator.getCodeName();
 
     when(operatorRepository.existsByCodeNameIgnoreCase(eq(codeName))).thenReturn(true);

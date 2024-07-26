@@ -38,7 +38,7 @@ class OperatorControllerTest {
 
   @Test
   void shouldAddOperator() throws Exception {
-    OperatorCreationDTO opCreation = buildOperatorCreationDto();
+    NewOperatorDTO opCreation = buildOperatorCreationDto();
     OperatorDTO operator = buildOperatorDto();
     when(operatorService.addOperator(eq(opCreation))).thenReturn(operator);
 
@@ -59,7 +59,7 @@ class OperatorControllerTest {
 
   @Test
   void shouldFailValidationWhenAddingOperator() throws Exception {
-    OperatorCreationDTO opCreation = buildOperatorCreationDto();
+    NewOperatorDTO opCreation = buildOperatorCreationDto();
     opCreation.setCodeName(null);
     opCreation.setRarity("1 star");
     mvc.perform(

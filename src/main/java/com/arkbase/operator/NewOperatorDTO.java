@@ -2,7 +2,11 @@ package com.arkbase.operator;
 
 import com.arkbase.annotation.ValueOfEnum;
 import com.arkbase.enums.Rarity;
-import com.arkbase.operator.enums.*;
+import com.arkbase.operator.enums.Archetype;
+import com.arkbase.operator.enums.AttackType;
+import com.arkbase.operator.enums.Position;
+import com.arkbase.operator.enums.Subclass;
+import com.arkbase.operator.enums.Trait;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OperatorCreationDTO {
+public class NewOperatorDTO {
 
   @NotBlank private String codeName;
 

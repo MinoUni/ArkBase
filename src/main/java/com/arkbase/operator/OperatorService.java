@@ -15,7 +15,7 @@ public class OperatorService {
   private final OperatorMapper mapper;
 
   @Transactional
-  public OperatorDTO addOperator(OperatorCreationDTO newOperator)
+  public OperatorDTO addOperator(NewOperatorDTO newOperator)
       throws OperatorAlreadyExistsException {
     final String codeName = newOperator.getCodeName();
     if (operatorRepository.existsByCodeNameIgnoreCase(codeName)) {

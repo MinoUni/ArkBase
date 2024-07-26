@@ -2,9 +2,9 @@ package com.arkbase.utils;
 
 import com.arkbase.attribute.OperatorAttributes;
 import com.arkbase.enums.Rarity;
+import com.arkbase.operator.NewOperatorDTO;
 import com.arkbase.operator.Operator;
 import com.arkbase.operator.OperatorAttributesDTO;
-import com.arkbase.operator.OperatorCreationDTO;
 import com.arkbase.operator.OperatorDTO;
 import com.arkbase.operator.enums.Archetype;
 import com.arkbase.operator.enums.AttackType;
@@ -14,8 +14,8 @@ import com.arkbase.operator.enums.Trait;
 
 public class OperatorUtils {
 
-  public static OperatorCreationDTO buildOperatorCreationDto() {
-    return OperatorCreationDTO.builder()
+  public static NewOperatorDTO buildOperatorCreationDto() {
+    return NewOperatorDTO.builder()
         .codeName("Ray")
         .archetype(Archetype.SNIPER.name())
         .subclass(Subclass.HUNTER.name())
