@@ -74,6 +74,15 @@ public class OperatorUtils {
   }
 
   public static OperatorAttributes buildOperatorAttributes() {
-    return new OperatorAttributes(2000, 1130, 200, 10, 1, 20, "Fast", "Long");
+    return OperatorAttributes.builder()
+        .hp(2000)
+        .atk(1130)
+        .def(200)
+        .res(10)
+        .block(1)
+        .deploymentCost(20)
+        .redeploymentTime("Long")
+        .aspd("Fast")
+        .build();
   }
 }

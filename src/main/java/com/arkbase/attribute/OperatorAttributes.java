@@ -8,12 +8,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Setter
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "operator_attributes")
@@ -48,23 +52,4 @@ public class OperatorAttributes {
   @OneToOne(fetch = FetchType.LAZY)
   @MapsId
   private Operator operator;
-
-  public OperatorAttributes(
-      Integer hp,
-      Integer atk,
-      Integer def,
-      Integer res,
-      Integer block,
-      Integer deploymentCost,
-      String redeploymentTime,
-      String aspd) {
-    this.hp = hp;
-    this.atk = atk;
-    this.def = def;
-    this.res = res;
-    this.block = block;
-    this.deploymentCost = deploymentCost;
-    this.redeploymentTime = redeploymentTime;
-    this.aspd = aspd;
-  }
 }
