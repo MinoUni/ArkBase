@@ -23,3 +23,7 @@ databaseChangeLog:
       file: db/changelog/changesets/2024/07/19_2005__change-columns-type-table-materials.sql
   - include:
       file: db/changelog/changesets/2024/07/19_2320__change-columns-type-table-skills.sql
+  - include:
+      file: db/changelog/changesets/2024/07/26_1140__add-column-quantity-to-table-operators_materials.sql
+  - include:
+      file: db/changelog/changesets/2024/07/27_1810__add-column-quantity-to-table-skills_materials.sql
