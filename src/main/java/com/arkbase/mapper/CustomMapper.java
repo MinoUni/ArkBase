@@ -18,6 +18,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface CustomMapper {
 
+  @Mapping(target = "id", ignore = true)
   @Mapping(target = "attributes", ignore = true)
   @Mapping(target = "materials", ignore = true)
   @Mapping(target = "skills", ignore = true)
@@ -32,6 +33,7 @@ public interface CustomMapper {
 
   OperatorAttributesDTO toOperatorAttributesDto(OperatorAttributes attributes);
 
+  @Mapping(target = "id", ignore = true)
   @Mapping(target = "materials", ignore = true)
   Skill toSkill(NewSkillDTO newSkill);
 

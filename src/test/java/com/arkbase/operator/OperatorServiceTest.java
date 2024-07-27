@@ -15,7 +15,9 @@ import static org.mockito.Mockito.when;
 import com.arkbase.attribute.OperatorAttributes;
 import com.arkbase.exception.OperatorAlreadyExistsException;
 import com.arkbase.mapper.CustomMapper;
+import com.arkbase.material.MaterialRepository;
 import com.arkbase.operator.enums.Archetype;
+import com.arkbase.skill.SkillRepository;
 import com.arkbase.utils.OperatorUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,9 +29,14 @@ class OperatorServiceTest {
 
   private final OperatorRepository operatorRepository = mock(OperatorRepository.class);
 
+  private final SkillRepository skillRepository = mock(SkillRepository.class);
+
+  private final MaterialRepository materialRepository = mock(MaterialRepository.class);
+
   private final CustomMapper mapper = mock(CustomMapper.class);
 
-  private final OperatorService operatorService = new OperatorService(operatorRepository, mapper);
+  private final OperatorService operatorService =
+      new OperatorService(operatorRepository, skillRepository, materialRepository, mapper);
 
   @Test
   void shouldAddOperator() {
