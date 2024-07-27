@@ -45,7 +45,7 @@ class OperatorRepositoryTest {
             .activationType(ActivationType.MANUAL_TRIGGER)
             .chargeType(ChargeType.PASSIVE)
             .build();
-    skill_1.addMaterial(mat_1).addMaterial(mat_2);
+    skill_1.addMaterial(mat_1, 5).addMaterial(mat_2, 5);
 
     var skill_2 =
         Skill.builder()
@@ -58,7 +58,7 @@ class OperatorRepositoryTest {
             .activationType(ActivationType.MANUAL_TRIGGER)
             .chargeType(ChargeType.PASSIVE)
             .build();
-    skill_2.addMaterial(mat_3);
+    skill_2.addMaterial(mat_3, 5);
 
     operator.addSkill(skill_1);
     operator.addSkill(skill_2);

@@ -10,13 +10,16 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -71,22 +74,25 @@ public class Skill {
 
   @Builder.Default
   @ToString.Exclude
-  @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-  @JoinTable(
-      name = "skills_materials",
-      joinColumns = @JoinColumn(name = "skill_id"),
-      inverseJoinColumns = @JoinColumn(name = "material_id"))
-  private Set<Material> materials = new HashSet<>();
+  @Setter(AccessLevel.NONE)
+  @OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<SkillMaterial> materials = new ArrayList<>();
 
-  public Skill addMaterial(Material material) {
-    materials.add(material);
-    material.getSkills().add(this);
+  public Skill addMaterial(Material material, Integer quantity) {
+    SkillMaterial skillMaterial = new SkillMaterial(this, material, quantity);
+    materials.add(skillMaterial);
     return this;
   }
 
   public void removeMaterial(Material material) {
-    materials.remove(material);
-    material.getSkills().remove(this);
+    for (Iterator<SkillMaterial> iterator = materials.iterator(); iterator.hasNext(); ) {
+      SkillMaterial skillMaterial = iterator.next();
+      if (skillMaterial.getSkill().equals(this) && skillMaterial.getMaterial().equals(material)) {
+        iterator.remove();
+        skillMaterial.setSkill(null);
+        skillMaterial.setMaterial(null);
+      }
+    }
   }
 
   @Override
