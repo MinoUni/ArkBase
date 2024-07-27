@@ -31,11 +31,11 @@ public class OperatorIntTest {
 
   @Test
   void shouldAddOperator() throws Exception {
-    NewOperatorDTO newOperator = OperatorUtils.buildOperatorCreationDto();
+    String newOperator = OperatorUtils.readWholeFile("add-operator-request.json");
     mvc.perform(
             post("/operators")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonMapper.writeValueAsString(newOperator)))
+                .content(newOperator))
         .andExpectAll(
             status().isCreated(),
             header().exists(HttpHeaders.LOCATION),

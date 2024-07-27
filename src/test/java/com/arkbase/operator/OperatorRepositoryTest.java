@@ -1,11 +1,12 @@
 package com.arkbase.operator;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import com.arkbase.attribute.OperatorAttributes;
+import com.arkbase.enums.Rarity;
+import com.arkbase.material.Material;
+import com.arkbase.skill.ActivationType;
+import com.arkbase.skill.ChargeType;
+import com.arkbase.skill.Skill;
 import com.arkbase.utils.OperatorUtils;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
@@ -17,29 +18,53 @@ class OperatorRepositoryTest {
 
   @Autowired private EntityManager entityManager;
 
-  @Autowired private OperatorRepository operatorRepository;
-
-  @Autowired private OperatorAttributesRepository attributesRepository;
+  @Autowired private OperatorRepository repository;
 
   @Test
   void shouldSaveNewOperator() {
     Operator operator = OperatorUtils.buildOperator();
-    OperatorAttributes attributes = OperatorUtils.buildOperatorAttributes();
-    attributes.setOperator(operator);
 
-    boolean result = operatorRepository.existsByCodeNameIgnoreCase(operator.getCodeName());
-    Operator savedOp = operatorRepository.save(operator);
-    OperatorAttributes savedAttributes = attributesRepository.save(attributes);
+    Material mat_1 =
+        Material.builder().name("MAT-1").rarity(Rarity.FIVE_STAR).description("TEXT").build();
+    Material mat_2 =
+        Material.builder().name("MAT-2").rarity(Rarity.FIVE_STAR).description("TEXT").build();
+    Material mat_3 =
+        Material.builder().name("MAT-3").rarity(Rarity.FIVE_STAR).description("TEXT").build();
 
-    assertAll(
-        () -> {
-          assertFalse(result);
-          assertNotNull(savedOp);
-          assertNotNull(savedAttributes);
-          assertEquals(operator, savedAttributes.getOperator());
-          assertEquals(1, savedOp.getId());
-          assertEquals(operator.getCodeName(), savedOp.getCodeName());
-          assertEquals(operator.getSubclass(), savedOp.getSubclass());
-        });
+    operator.addMaterial(mat_1, 5);
+    operator.addMaterial(mat_2, 5);
+
+    var skill_1 =
+        Skill.builder()
+            .name("SKILL-1")
+            .description("TEXT")
+            .level(7)
+            .mastery(3)
+            .spCost(20)
+            .duration(10)
+            .activationType(ActivationType.MANUAL_TRIGGER)
+            .chargeType(ChargeType.PASSIVE)
+            .build();
+    skill_1.addMaterial(mat_1).addMaterial(mat_2);
+
+    var skill_2 =
+        Skill.builder()
+            .name("SKILL-2")
+            .description("TEXT")
+            .level(7)
+            .mastery(3)
+            .spCost(20)
+            .duration(10)
+            .activationType(ActivationType.MANUAL_TRIGGER)
+            .chargeType(ChargeType.PASSIVE)
+            .build();
+    skill_2.addMaterial(mat_3);
+
+    operator.addSkill(skill_1);
+    operator.addSkill(skill_2);
+
+    var savedOperator = repository.save(operator);
+
+    assertEquals(operator, savedOperator);
   }
 }

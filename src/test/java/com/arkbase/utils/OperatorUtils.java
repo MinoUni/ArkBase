@@ -2,6 +2,7 @@ package com.arkbase.utils;
 
 import com.arkbase.attribute.OperatorAttributes;
 import com.arkbase.enums.Rarity;
+import com.arkbase.material.NewMaterialDTO;
 import com.arkbase.operator.NewOperatorDTO;
 import com.arkbase.operator.Operator;
 import com.arkbase.operator.OperatorAttributesDTO;
@@ -11,10 +12,16 @@ import com.arkbase.operator.enums.AttackType;
 import com.arkbase.operator.enums.Position;
 import com.arkbase.operator.enums.Subclass;
 import com.arkbase.operator.enums.Trait;
+import com.arkbase.skill.ActivationType;
+import com.arkbase.skill.ChargeType;
+import com.arkbase.skill.NewSkillDTO;
+import java.io.InputStream;
+import java.util.Objects;
+import java.util.Set;
 
 public class OperatorUtils {
 
-  public static NewOperatorDTO buildOperatorCreationDto() {
+  public static NewOperatorDTO buildNewOperatorDto() {
     return NewOperatorDTO.builder()
         .codeName("Ray")
         .archetype(Archetype.SNIPER.name())
@@ -23,17 +30,49 @@ public class OperatorUtils {
         .rarity(Rarity.SIX_STAR.name())
         .position(Position.RANGED.name())
         .attackType(AttackType.PHYSICAL_DAMAGE.name())
-        .attributes(
-            OperatorAttributesDTO.builder()
-                .hp(2000)
-                .atk(1130)
-                .def(200)
-                .res(10)
-                .block(1)
-                .aspd("Fast")
-                .deploymentCost(20)
-                .redeploymentTime("Long")
-                .build())
+        .attributes(buildOperatorAttributesDto())
+        .skills(
+            Set.of(
+                buildOperatorSkillDto("SKill-1"),
+                buildOperatorSkillDto("SKill-2"),
+                buildOperatorSkillDto("SKill-3")))
+        .materials(Set.of(buildNewMaterialDto("Material-3"), buildNewMaterialDto("Material-4")))
+        .build();
+  }
+
+  public static NewSkillDTO buildOperatorSkillDto(String name) {
+    return NewSkillDTO.builder()
+        .name(name)
+        .description("TEXT")
+        .level(7)
+        .mastery(3)
+        .spCost(20)
+        .duration(10)
+        .activationType(ActivationType.MANUAL_TRIGGER)
+        .chargeType(ChargeType.PASSIVE)
+        .materials(Set.of(buildNewMaterialDto("Material-1"), buildNewMaterialDto("Material-2")))
+        .build();
+  }
+
+  public static NewMaterialDTO buildNewMaterialDto(String name) {
+    return NewMaterialDTO.builder()
+        .name(name)
+        .rarity(Rarity.FIVE_STAR)
+        .description("TEXT")
+        .quantity(5)
+        .build();
+  }
+
+  public static OperatorAttributesDTO buildOperatorAttributesDto() {
+    return OperatorAttributesDTO.builder()
+        .hp(2000)
+        .atk(1130)
+        .def(200)
+        .res(10)
+        .block(1)
+        .aspd("Fast")
+        .deploymentCost(20)
+        .redeploymentTime("Long")
         .build();
   }
 
@@ -47,17 +86,7 @@ public class OperatorUtils {
         .rarity(Rarity.SIX_STAR)
         .position(Position.RANGED)
         .attackType(AttackType.PHYSICAL_DAMAGE)
-        .attributes(
-            OperatorAttributesDTO.builder()
-                .hp(2000)
-                .atk(1130)
-                .def(200)
-                .res(10)
-                .block(1)
-                .aspd("Fast")
-                .deploymentCost(20)
-                .redeploymentTime("Long")
-                .build())
+        .attributes(buildOperatorAttributesDto())
         .build();
   }
 
@@ -84,5 +113,12 @@ public class OperatorUtils {
         .redeploymentTime("Long")
         .aspd("Fast")
         .build();
+  }
+
+  public static String readWholeFile(String fileName) throws Exception {
+    String filePath = "/test-json-samples/" + fileName;
+    try (InputStream inputStream = OperatorUtils.class.getResourceAsStream(filePath)) {
+      return new String(Objects.requireNonNull(inputStream).readAllBytes());
+    }
   }
 }

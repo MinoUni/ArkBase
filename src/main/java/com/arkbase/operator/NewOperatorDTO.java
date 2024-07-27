@@ -2,12 +2,16 @@ package com.arkbase.operator;
 
 import com.arkbase.annotation.ValueOfEnum;
 import com.arkbase.enums.Rarity;
+import com.arkbase.material.NewMaterialDTO;
 import com.arkbase.operator.enums.Archetype;
 import com.arkbase.operator.enums.AttackType;
 import com.arkbase.operator.enums.Position;
 import com.arkbase.operator.enums.Subclass;
 import com.arkbase.operator.enums.Trait;
+import com.arkbase.skill.NewSkillDTO;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,7 +23,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class NewOperatorDTO {
 
-  @NotBlank private String codeName;
+  @NotBlank
+  private String codeName;
 
   @ValueOfEnum(enumClass = Archetype.class)
   private String archetype;
@@ -39,5 +44,12 @@ public class NewOperatorDTO {
   @ValueOfEnum(enumClass = AttackType.class)
   private String attackType;
 
+  @Valid
   private OperatorAttributesDTO attributes;
+
+  @Valid
+  private Set<NewSkillDTO> skills;
+
+  @Valid
+  private Set<NewMaterialDTO> materials;
 }

@@ -1,6 +1,6 @@
 package com.arkbase.operator;
 
-import static com.arkbase.utils.OperatorUtils.buildOperatorCreationDto;
+import static com.arkbase.utils.OperatorUtils.buildNewOperatorDto;
 import static com.arkbase.utils.OperatorUtils.buildOperatorDto;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.core.Is.is;
@@ -38,7 +38,7 @@ class OperatorControllerTest {
 
   @Test
   void shouldAddOperator() throws Exception {
-    NewOperatorDTO opCreation = buildOperatorCreationDto();
+    NewOperatorDTO opCreation = buildNewOperatorDto();
     OperatorDTO operator = buildOperatorDto();
     when(operatorService.addOperator(eq(opCreation))).thenReturn(operator);
 
@@ -59,7 +59,7 @@ class OperatorControllerTest {
 
   @Test
   void shouldFailValidationWhenAddingOperator() throws Exception {
-    NewOperatorDTO opCreation = buildOperatorCreationDto();
+    NewOperatorDTO opCreation = buildNewOperatorDto();
     opCreation.setCodeName(null);
     opCreation.setRarity("1 star");
     mvc.perform(

@@ -14,7 +14,7 @@ import static org.mockito.Mockito.when;
 
 import com.arkbase.attribute.OperatorAttributes;
 import com.arkbase.exception.OperatorAlreadyExistsException;
-import com.arkbase.mapper.OperatorMapper;
+import com.arkbase.mapper.CustomMapper;
 import com.arkbase.operator.enums.Archetype;
 import com.arkbase.utils.OperatorUtils;
 import org.junit.jupiter.api.DisplayName;
@@ -27,13 +27,13 @@ class OperatorServiceTest {
 
   private final OperatorRepository operatorRepository = mock(OperatorRepository.class);
 
-  private final OperatorMapper mapper = mock(OperatorMapper.class);
+  private final CustomMapper mapper = mock(CustomMapper.class);
 
   private final OperatorService operatorService = new OperatorService(operatorRepository, mapper);
 
   @Test
   void shouldAddOperator() {
-    NewOperatorDTO newOperator = OperatorUtils.buildOperatorCreationDto();
+    NewOperatorDTO newOperator = OperatorUtils.buildNewOperatorDto();
     final String codeName = newOperator.getCodeName();
     Operator operator = OperatorUtils.buildOperator();
     operator.setId(1);
@@ -69,7 +69,7 @@ class OperatorServiceTest {
   @Test
   @DisplayName("should throw OperatorAlreadyExistsException when adding new operator")
   void shouldThrowOperatorAlreadyExistsExceptionWhenAddOperator() {
-    NewOperatorDTO newOperator = OperatorUtils.buildOperatorCreationDto();
+    NewOperatorDTO newOperator = OperatorUtils.buildNewOperatorDto();
     final String codeName = newOperator.getCodeName();
 
     when(operatorRepository.existsByCodeNameIgnoreCase(eq(codeName))).thenReturn(true);

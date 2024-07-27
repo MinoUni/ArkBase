@@ -18,8 +18,16 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
+@Setter
+@Getter
+@Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -56,15 +64,30 @@ public class Skill {
   @Column(nullable = false)
   private Integer duration;
 
+  @Builder.Default
+  @ToString.Exclude
   @ManyToMany(mappedBy = "skills")
   private Set<Operator> operators = new HashSet<>();
 
+  @Builder.Default
+  @ToString.Exclude
   @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   @JoinTable(
       name = "skills_materials",
       joinColumns = @JoinColumn(name = "skill_id"),
       inverseJoinColumns = @JoinColumn(name = "material_id"))
   private Set<Material> materials = new HashSet<>();
+
+  public Skill addMaterial(Material material) {
+    materials.add(material);
+    material.getSkills().add(this);
+    return this;
+  }
+
+  public void removeMaterial(Material material) {
+    materials.remove(material);
+    material.getSkills().remove(this);
+  }
 
   @Override
   public boolean equals(Object o) {

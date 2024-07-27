@@ -28,7 +28,10 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import lombok.AccessLevel;
@@ -37,10 +40,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -82,6 +87,15 @@ public class Operator {
   @OneToOne(mappedBy = "operator", cascade = CascadeType.ALL, orphanRemoval = true)
   private OperatorAttributes attributes;
 
+  @Builder.Default
+  @ToString.Exclude
+  @Setter(AccessLevel.NONE)
+  @OneToMany(mappedBy = "operator", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<OperatorMaterial> materials = new ArrayList<>();
+
+  @Builder.Default
+  @ToString.Exclude
+  @Setter(AccessLevel.NONE)
   @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   @JoinTable(
       name = "operators_skills",
@@ -89,32 +103,41 @@ public class Operator {
       inverseJoinColumns = @JoinColumn(name = "skill_id"))
   private Set<Skill> skills = new HashSet<>();
 
-  public Operator(
-      String codeName,
-      String archetype,
-      String subclass,
-      String rarity,
-      String trait,
-      String position,
-      String attackType) {
-    this.codeName = codeName;
-    this.archetype = Archetype.valueOf(archetype.toUpperCase());
-    this.subclass = Subclass.valueOf(subclass.toUpperCase());
-    this.rarity = Rarity.valueOf(rarity.toUpperCase());
-    this.trait = Trait.valueOf(trait.toUpperCase());
-    this.position = Position.valueOf(position.toUpperCase());
-    this.attackType = AttackType.valueOf(attackType.toUpperCase());
-  public void addAttributes(OperatorAttributes attributes) {
+  public void setAttributes(OperatorAttributes attributes) {
+    if (attributes == null) {
+      if (this.attributes != null) {
+        this.attributes.setOperator(null);
+      }
+    } else {
+      attributes.setOperator(this);
+    }
     this.attributes = attributes;
-    attributes.setOperator(this);
   }
 
-  public void removeAttributes(OperatorAttributes attributes) {
-    if (attributes != null) {
-      attributes.setOperator(null);
-    }
-    this.attributes = null;
+  public void addMaterial(Material material, Integer materialQuantity) {
+    OperatorMaterial opMaterial = new OperatorMaterial(this, material, materialQuantity);
+    materials.add(opMaterial);
   }
+
+  public void removeMaterial(Material material) {
+    for (Iterator<OperatorMaterial> iterator = materials.iterator(); iterator.hasNext(); ) {
+      OperatorMaterial opMaterial = iterator.next();
+      if (opMaterial.getOperator().equals(this) && opMaterial.getMaterial().equals(material)) {
+        iterator.remove();
+        opMaterial.setOperator(null);
+        opMaterial.setMaterial(null);
+      }
+    }
+  }
+
+  public void addSkill(Skill skill) {
+    skills.add(skill);
+    skill.getOperators().add(this);
+  }
+
+  public void removeSkill(Skill skill) {
+    skills.remove(skill);
+    skill.getOperators().remove(this);
   }
 
   @Override
