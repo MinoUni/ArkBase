@@ -45,10 +45,13 @@ public class Skill {
   private String name;
 
   @Column(nullable = false, columnDefinition = "TEXT")
-  private String description;
+  private String effect;
 
   @Column(name = "sp_cost", nullable = false)
   private Integer spCost;
+
+  @Column(name = "sp_initial", nullable = false)
+  private Integer spInitial;
 
   @Column(nullable = false)
   private Integer level;

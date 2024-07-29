@@ -1,13 +1,10 @@
 package com.arkbase.skill;
 
-import com.arkbase.material.NewMaterialDTO;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
-import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,14 +15,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @EqualsAndHashCode(
     exclude = {
-      "description",
+      "effect",
       "spCost",
+      "spInitial",
       "level",
       "mastery",
       "chargeType",
       "activationType",
       "duration",
-      "materials"
     })
 @NoArgsConstructor
 @AllArgsConstructor
@@ -35,10 +32,13 @@ public class NewSkillDTO {
   private String name;
 
   @NotBlank
-  private String description;
+  private String effect;
 
   @PositiveOrZero
   private Integer spCost;
+
+  @PositiveOrZero
+  private Integer spInitial;
 
   @Min(value = 1)
   @Max(value = 7)
@@ -52,9 +52,5 @@ public class NewSkillDTO {
 
   private ActivationType activationType;
 
-  @Positive
-  private Integer duration;
-
-  @Valid
-  private Set<NewMaterialDTO> materials;
+  @Positive private Integer duration;
 }
