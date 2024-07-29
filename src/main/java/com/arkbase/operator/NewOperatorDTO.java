@@ -2,7 +2,6 @@ package com.arkbase.operator;
 
 import com.arkbase.annotation.ValueOfEnum;
 import com.arkbase.enums.Rarity;
-import com.arkbase.material.NewMaterialDTO;
 import com.arkbase.operator.enums.Archetype;
 import com.arkbase.operator.enums.AttackType;
 import com.arkbase.operator.enums.Position;
@@ -50,6 +49,4 @@ public class NewOperatorDTO {
   @Valid
   private Set<NewSkillDTO> skills;
 
-  @Valid
-  private Set<NewMaterialDTO> materials;
 }
