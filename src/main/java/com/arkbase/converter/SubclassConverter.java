@@ -1,6 +1,6 @@
 package com.arkbase.converter;
 
-import com.arkbase.operator.Subclass;
+import com.arkbase.operator.enums.Subclass;
 import jakarta.persistence.Converter;
 
 @Converter

@@ -10,16 +10,27 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
+@Setter
+@Getter
+@Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -34,10 +45,13 @@ public class Skill {
   private String name;
 
   @Column(nullable = false, columnDefinition = "TEXT")
-  private String description;
+  private String effect;
 
   @Column(name = "sp_cost", nullable = false)
   private Integer spCost;
+
+  @Column(name = "sp_initial", nullable = false)
+  private Integer spInitial;
 
   @Column(nullable = false)
   private Integer level;
@@ -56,15 +70,33 @@ public class Skill {
   @Column(nullable = false)
   private Integer duration;
 
+  @Builder.Default
+  @ToString.Exclude
   @ManyToMany(mappedBy = "skills")
   private Set<Operator> operators = new HashSet<>();
 
-  @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-  @JoinTable(
-      name = "skills_materials",
-      joinColumns = @JoinColumn(name = "skill_id"),
-      inverseJoinColumns = @JoinColumn(name = "material_id"))
-  private Set<Material> materials = new HashSet<>();
+  @Builder.Default
+  @ToString.Exclude
+  @Setter(AccessLevel.NONE)
+  @OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<SkillMaterial> materials = new ArrayList<>();
+
+  public Skill addMaterial(Material material, Integer quantity) {
+    SkillMaterial skillMaterial = new SkillMaterial(this, material, quantity);
+    materials.add(skillMaterial);
+    return this;
+  }
+
+  public void removeMaterial(Material material) {
+    for (Iterator<SkillMaterial> iterator = materials.iterator(); iterator.hasNext(); ) {
+      SkillMaterial skillMaterial = iterator.next();
+      if (skillMaterial.getSkill().equals(this) && skillMaterial.getMaterial().equals(material)) {
+        iterator.remove();
+        skillMaterial.setSkill(null);
+        skillMaterial.setMaterial(null);
+      }
+    }
+  }
 
   @Override
   public boolean equals(Object o) {

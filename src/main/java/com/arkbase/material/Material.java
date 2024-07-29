@@ -2,22 +2,25 @@ package com.arkbase.material;
 
 import com.arkbase.converter.RarityConverter;
 import com.arkbase.enums.Rarity;
-import com.arkbase.operator.Operator;
-import com.arkbase.skill.Skill;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
+@Getter
+@Setter
+@Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -37,12 +40,6 @@ public class Material {
 
   @Column(nullable = false, columnDefinition = "TEXT")
   private String description;
-
-  @ManyToMany(mappedBy = "materials")
-  private Set<Operator> operators = new HashSet<>();
-
-  @ManyToMany(mappedBy = "materials")
-  private Set<Skill> skills = new HashSet<>();
 
   @Override
   public boolean equals(Object o) {

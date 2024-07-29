@@ -1,4 +1,4 @@
-package com.arkbase.operator;
+package com.arkbase.operator.enums;
 
 public enum Position {
   MELEE,

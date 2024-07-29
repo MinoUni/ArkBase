@@ -1,10 +1,13 @@
-package com.arkbase.operator;
+package com.arkbase.operator.enums;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+//  ? Check if enum can be replaced by table or smth else
 @Getter
 @RequiredArgsConstructor
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum Trait {
   // * Caster class subclasses
   CORE_CASTER("Attack deals [Arts damage]"),
@@ -71,6 +74,9 @@ public enum Trait {
           + "in a small area(2nd hit is an aftershock with halved damage)"),
   DEADEYE("Prioritize lowest defense enemies within attack range"),
   BESIEGER("Targets highest weight enemy"),
+  HUNTER(
+      "Attacks require ammo and increase ATK by 120%. "
+          + "When not attacking, gradually reload ammo (up to 8)"),
 
   // * Specialist class subclasses
   EXECUTOR("Greatly reduced [Redeployment Time]"),

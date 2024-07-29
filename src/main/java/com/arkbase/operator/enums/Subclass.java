@@ -1,10 +1,12 @@
-package com.arkbase.operator;
+package com.arkbase.operator.enums;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum Subclass {
   // * Caster class
   CORE_CASTER("Core Caster"),
@@ -41,6 +43,7 @@ public enum Subclass {
   FLINGER("Flinger"),
   DEADEYE("Deadeye"),
   BESIEGER("Besieger"),
+  HUNTER("Hunter"),
   // * Specialist
   EXECUTOR("Executor"),
   Merchant("Merchant"),
