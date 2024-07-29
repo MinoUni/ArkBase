@@ -12,8 +12,8 @@
     "def": 100,
     "res": 10,
     "block": 1,
-    "deploymentCost": 22,
-    "redeploymentTime": "Slow",
+    "deployCost": 22,
+    "redeployTime": "Slow",
     "aspd": "Fast"
   },
   "skills": [
