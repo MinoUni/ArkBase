@@ -7,7 +7,7 @@ import com.arkbase.material.Material;
 import com.arkbase.skill.ActivationType;
 import com.arkbase.skill.ChargeType;
 import com.arkbase.skill.Skill;
-import com.arkbase.utils.OperatorUtils;
+import com.arkbase.utils.TestUtils;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ class OperatorRepositoryTest {
 
   @Test
   void shouldSaveNewOperator() {
-    Operator operator = OperatorUtils.buildOperator();
+    Operator operator = TestUtils.buildOperator();
 
     Material mat_1 =
         Material.builder().name("MAT-1").rarity(Rarity.FIVE_STAR).description("TEXT").build();
@@ -37,10 +37,11 @@ class OperatorRepositoryTest {
     var skill_1 =
         Skill.builder()
             .name("SKILL-1")
-            .description("TEXT")
+            .effect("TEXT")
             .level(7)
             .mastery(3)
             .spCost(20)
+            .spInitial(17)
             .duration(10)
             .activationType(ActivationType.MANUAL_TRIGGER)
             .chargeType(ChargeType.PASSIVE)
@@ -50,10 +51,11 @@ class OperatorRepositoryTest {
     var skill_2 =
         Skill.builder()
             .name("SKILL-2")
-            .description("TEXT")
+            .effect("TEXT")
             .level(7)
             .mastery(3)
             .spCost(20)
+            .spInitial(17)
             .duration(10)
             .activationType(ActivationType.MANUAL_TRIGGER)
             .chargeType(ChargeType.PASSIVE)

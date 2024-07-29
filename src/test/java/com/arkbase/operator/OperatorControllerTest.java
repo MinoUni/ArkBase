@@ -1,7 +1,7 @@
 package com.arkbase.operator;
 
-import static com.arkbase.utils.OperatorUtils.buildNewOperatorDto;
-import static com.arkbase.utils.OperatorUtils.buildOperatorDto;
+import static com.arkbase.utils.TestUtils.buildNewOperatorDto;
+import static com.arkbase.utils.TestUtils.buildOperatorDto;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.eq;

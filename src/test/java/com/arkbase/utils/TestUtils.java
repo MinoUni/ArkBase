@@ -15,11 +15,12 @@ import com.arkbase.operator.enums.Trait;
 import com.arkbase.skill.ActivationType;
 import com.arkbase.skill.ChargeType;
 import com.arkbase.skill.NewSkillDTO;
+import com.arkbase.skill.Skill;
 import java.io.InputStream;
 import java.util.Objects;
 import java.util.Set;
 
-public class OperatorUtils {
+public class TestUtils {
 
   public static NewOperatorDTO buildNewOperatorDto() {
     return NewOperatorDTO.builder()
@@ -36,22 +37,24 @@ public class OperatorUtils {
                 buildOperatorSkillDto("SKill-1"),
                 buildOperatorSkillDto("SKill-2"),
                 buildOperatorSkillDto("SKill-3")))
-        .materials(Set.of(buildNewMaterialDto("Material-3"), buildNewMaterialDto("Material-4")))
         .build();
   }
 
   public static NewSkillDTO buildOperatorSkillDto(String name) {
     return NewSkillDTO.builder()
         .name(name)
-        .description("TEXT")
+        .effect("TEXT")
         .level(7)
         .mastery(3)
         .spCost(20)
         .duration(10)
         .activationType(ActivationType.MANUAL_TRIGGER)
         .chargeType(ChargeType.PASSIVE)
-        .materials(Set.of(buildNewMaterialDto("Material-1"), buildNewMaterialDto("Material-2")))
         .build();
+  }
+
+  public static Skill buildSkill(String name) {
+    return Skill.builder().name(name).build();
   }
 
   public static NewMaterialDTO buildNewMaterialDto(String name) {
@@ -117,7 +120,7 @@ public class OperatorUtils {
 
   public static String readWholeFile(String fileName) throws Exception {
     String filePath = "/test-json-samples/" + fileName;
-    try (InputStream inputStream = OperatorUtils.class.getResourceAsStream(filePath)) {
+    try (InputStream inputStream = TestUtils.class.getResourceAsStream(filePath)) {
       return new String(Objects.requireNonNull(inputStream).readAllBytes());
     }
   }

@@ -5,20 +5,15 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import com.arkbase.attribute.OperatorAttributes;
 import com.arkbase.exception.OperatorAlreadyExistsException;
 import com.arkbase.mapper.CustomMapper;
-import com.arkbase.material.MaterialRepository;
 import com.arkbase.operator.enums.Archetype;
+import com.arkbase.skill.NewSkillDTO;
 import com.arkbase.skill.SkillRepository;
-import com.arkbase.utils.OperatorUtils;
+import com.arkbase.utils.TestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,26 +26,28 @@ class OperatorServiceTest {
 
   private final SkillRepository skillRepository = mock(SkillRepository.class);
 
-  private final MaterialRepository materialRepository = mock(MaterialRepository.class);
-
-  private final CustomMapper mapper = mock(CustomMapper.class);
+    private final CustomMapper mapper = mock(CustomMapper.class);
 
   private final OperatorService operatorService =
-      new OperatorService(operatorRepository, skillRepository, materialRepository, mapper);
+      new OperatorService(operatorRepository, skillRepository, mapper);
 
   @Test
   void shouldAddOperator() {
-    NewOperatorDTO newOperator = OperatorUtils.buildNewOperatorDto();
+    NewOperatorDTO newOperator = TestUtils.buildNewOperatorDto();
     final String codeName = newOperator.getCodeName();
-    Operator operator = OperatorUtils.buildOperator();
+    Operator operator = TestUtils.buildOperator();
     operator.setId(1);
-    OperatorAttributes attributes = OperatorUtils.buildOperatorAttributes();
+    OperatorAttributes attributes = TestUtils.buildOperatorAttributes();
     OperatorAttributesDTO newAttributes = newOperator.getAttributes();
-    OperatorDTO opDto = OperatorUtils.buildOperatorDto();
+    OperatorDTO opDto = TestUtils.buildOperatorDto();
 
     when(operatorRepository.existsByCodeNameIgnoreCase(eq(codeName))).thenReturn(false);
     when(mapper.toOperator(eq(newOperator))).thenReturn(operator);
     when(mapper.toOperatorAttributes(eq(newAttributes))).thenReturn(attributes);
+
+    when(mapper.toSkill(any(NewSkillDTO.class))).thenReturn(TestUtils.buildSkill("SkillName"));
+    when(skillRepository.existsByNameIgnoreCase(any(String.class))).thenReturn(false);
+
     when(operatorRepository.save(any(Operator.class))).thenReturn(operator);
     when(mapper.toOperatorDto(eq(operator), eq(attributes))).thenReturn(opDto);
 
@@ -69,6 +66,8 @@ class OperatorServiceTest {
     verify(operatorRepository).existsByCodeNameIgnoreCase(eq(codeName));
     verify(mapper).toOperator(eq(newOperator));
     verify(mapper).toOperatorAttributes(eq(newAttributes));
+    verify(mapper, times(3)).toSkill(any(NewSkillDTO.class));
+    verify(skillRepository, times(3)).existsByNameIgnoreCase(any(String.class));
     verify(mapper).toOperatorDto(eq(operator), eq(attributes));
     verify(operatorRepository).save(any(Operator.class));
   }
@@ -76,7 +75,7 @@ class OperatorServiceTest {
   @Test
   @DisplayName("should throw OperatorAlreadyExistsException when adding new operator")
   void shouldThrowOperatorAlreadyExistsExceptionWhenAddOperator() {
-    NewOperatorDTO newOperator = OperatorUtils.buildNewOperatorDto();
+    NewOperatorDTO newOperator = TestUtils.buildNewOperatorDto();
     final String codeName = newOperator.getCodeName();
 
     when(operatorRepository.existsByCodeNameIgnoreCase(eq(codeName))).thenReturn(true);
