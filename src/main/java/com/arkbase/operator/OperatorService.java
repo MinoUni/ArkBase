@@ -1,6 +1,7 @@
 package com.arkbase.operator;
 
 import com.arkbase.exception.OperatorAlreadyExistsException;
+import com.arkbase.exception.OperatorNotFoundException;
 import com.arkbase.mapper.CustomMapper;
 import com.arkbase.skill.NewSkillDTO;
 import com.arkbase.skill.Skill;
@@ -47,5 +48,19 @@ public class OperatorService {
             operator.addSkill(skill);
           }
         });
+  }
+
+  public OperatorDTO findById(Integer id) {
+    return operatorRepository
+        .findById(id)
+        .map(operator -> mapper.toOperatorDto(operator, operator.getAttributes()))
+        .orElseThrow(() -> new OperatorNotFoundException(id));
+  }
+
+  public OperatorDTO findByCodeName(String codeName) {
+    return operatorRepository
+        .findByCodeNameIgnoreCase(codeName)
+        .map(operator -> mapper.toOperatorDto(operator, operator.getAttributes()))
+        .orElseThrow(() -> new OperatorNotFoundException(codeName));
   }
 }

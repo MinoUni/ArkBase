@@ -19,7 +19,8 @@ public class OperatorModelAssembler
   public @NonNull EntityModel<OperatorDTO> toModel(@NonNull OperatorDTO operator) {
     return EntityModel.of(
         operator,
-        linkTo(methodOn(OperatorController.class).findOperatorById(operator.getId()))
+        linkTo(methodOn(OperatorController.class).findOperatorById(operator.getId())).withSelfRel(),
+        linkTo(methodOn(OperatorController.class).findOperatorByCodeName(operator.getCodeName()))
             .withSelfRel());
   }
 }

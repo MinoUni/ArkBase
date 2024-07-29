@@ -1,6 +1,7 @@
 package com.arkbase.handler;
 
 import com.arkbase.exception.OperatorAlreadyExistsException;
+import com.arkbase.exception.OperatorNotFoundException;
 import java.util.List;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -46,6 +47,15 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
   public ResponseEntity<Object> handleOperatorAlreadyExistsException(
       OperatorAlreadyExistsException e) {
     HttpStatus status = HttpStatus.CONFLICT;
+    ApiError apiError = new ApiError(status, e.getMessage());
+    return ResponseEntity.status(status)
+        .contentType(MediaType.APPLICATION_PROBLEM_JSON)
+        .body(apiError);
+  }
+
+  @ExceptionHandler(OperatorNotFoundException.class)
+  public ResponseEntity<Object> handleOperatorNotFoundException(OperatorNotFoundException e) {
+    HttpStatus status = HttpStatus.NOT_FOUND;
     ApiError apiError = new ApiError(status, e.getMessage());
     return ResponseEntity.status(status)
         .contentType(MediaType.APPLICATION_PROBLEM_JSON)

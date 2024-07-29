@@ -16,7 +16,9 @@ import com.arkbase.skill.ActivationType;
 import com.arkbase.skill.ChargeType;
 import com.arkbase.skill.NewSkillDTO;
 import com.arkbase.skill.Skill;
+import com.arkbase.skill.SkillDTO;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -34,13 +36,13 @@ public class TestUtils {
         .attributes(buildOperatorAttributesDto())
         .skills(
             Set.of(
-                buildOperatorSkillDto("SKill-1"),
-                buildOperatorSkillDto("SKill-2"),
-                buildOperatorSkillDto("SKill-3")))
+                buildOperatorNewSkillDto("SKill-1"),
+                buildOperatorNewSkillDto("SKill-2"),
+                buildOperatorNewSkillDto("SKill-3")))
         .build();
   }
 
-  public static NewSkillDTO buildOperatorSkillDto(String name) {
+  public static NewSkillDTO buildOperatorNewSkillDto(String name) {
     return NewSkillDTO.builder()
         .name(name)
         .effect("TEXT")
@@ -90,6 +92,21 @@ public class TestUtils {
         .position(Position.RANGED)
         .attackType(AttackType.PHYSICAL_DAMAGE)
         .attributes(buildOperatorAttributesDto())
+        .skills(List.of(buildSkillDto("Skill-1"), buildSkillDto("Skill-2")))
+        .build();
+  }
+
+  public static SkillDTO buildSkillDto(String name) {
+    return SkillDTO.builder()
+        .name(name)
+        .effect("TEXT")
+        .level(7)
+        .mastery(3)
+        .spCost(20)
+        .spInitial(17)
+        .duration(10)
+        .activationType(ActivationType.MANUAL_TRIGGER)
+        .chargeType(ChargeType.PASSIVE)
         .build();
   }
 
@@ -102,6 +119,7 @@ public class TestUtils {
         .trait(Trait.HUNTER)
         .position(Position.RANGED)
         .attackType(AttackType.PHYSICAL_DAMAGE)
+        .attributes(buildOperatorAttributes())
         .build();
   }
 

@@ -1,0 +1,43 @@
+{
+  "codeName": "Ray",
+  "archetype": "SNIPER",
+  "subclass": "HUNTER",
+  "rarity": "SIX_STAR",
+  "trait": "HUNTER",
+  "position": "RANGED",
+  "attackType": "PHYSICAL_DAMAGE",
+  "attributes": {
+    "hp": 2000,
+    "atk": 1200,
+    "def": 100,
+    "res": 10,
+    "block": 1,
+    "deploymentCost": 22,
+    "redeploymentTime": "Slow",
+    "aspd": "Fast"
+  },
+  "skills": [
+    {
+      "name": "Skill-1",
+      "effect": "TEXT",
+      "level": 7,
+      "mastery": 3,
+      "spCost": 20,
+      "spInitial": 17,
+      "duration": 10,
+      "activationType": "MANUAL_TRIGGER",
+      "chargeType": "PASSIVE"
+    },
+    {
+      "name": "Skill-2",
+      "effect": "TEXT",
+      "level": 7,
+      "mastery": 3,
+      "spCost": 20,
+      "spInitial": 17,
+      "duration": 10,
+      "activationType": "MANUAL_TRIGGER",
+      "chargeType": "PASSIVE"
+    }
+  ]
+}

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -33,11 +34,14 @@ public class OperatorController {
         .body(operatorModel);
   }
 
-  @GetMapping(
-      value = "/{id}",
-      consumes = MediaType.APPLICATION_JSON_VALUE,
-      produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   public EntityModel<OperatorDTO> findOperatorById(@PathVariable Integer id) {
-    throw new UnsupportedOperationException();
+    return assembler.toModel(operatorService.findById(id));
+  }
+
+  @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+  public EntityModel<OperatorDTO> findOperatorByCodeName(
+      @RequestParam("codeName") String codeName) {
+    return assembler.toModel(operatorService.findByCodeName(codeName));
   }
 }
