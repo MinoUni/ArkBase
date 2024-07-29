@@ -24,9 +24,9 @@ public class OperatorAttributesDTO {
 
   @NotNull @PositiveOrZero private Integer block;
 
-  @NotNull @PositiveOrZero private Integer deploymentCost;
+  @NotNull @PositiveOrZero private Integer deployCost;
 
-  @NotBlank private String redeploymentTime;
+  @NotBlank private String redeployTime;
 
   @NotBlank private String aspd;
 }

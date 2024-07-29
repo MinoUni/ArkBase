@@ -40,11 +40,11 @@ public class OperatorAttributes {
   @Column(nullable = false)
   private Integer block;
 
-  @Column(nullable = false)
-  private Integer deploymentCost;
+  @Column(name = "deploy_cost", nullable = false)
+  private Integer deployCost;
 
-  @Column(nullable = false)
-  private String redeploymentTime;
+  @Column(name = "redeploy_time", nullable = false)
+  private String redeployTime;
 
   @Column(nullable = false)
   private String aspd;

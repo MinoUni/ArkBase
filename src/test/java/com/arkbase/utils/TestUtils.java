@@ -74,8 +74,8 @@ public class TestUtils {
         .res(10)
         .block(1)
         .aspd("Fast")
-        .deploymentCost(20)
-        .redeploymentTime("Long")
+        .deployCost(20)
+        .redeployTime("Long")
         .build();
   }
 
@@ -112,8 +112,8 @@ public class TestUtils {
         .def(200)
         .res(10)
         .block(1)
-        .deploymentCost(20)
-        .redeploymentTime("Long")
+        .deployCost(20)
+        .redeployTime("Long")
         .aspd("Fast")
         .build();
   }
