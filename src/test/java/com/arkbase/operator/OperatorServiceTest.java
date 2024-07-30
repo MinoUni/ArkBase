@@ -42,11 +42,11 @@ class OperatorServiceTest {
   @Test
   void shouldAddOperator() {
     NewOperatorDTO newOperator = TestUtils.buildNewOperatorDto();
-    final String codeName = newOperator.getCodeName();
+    final String codeName = newOperator.codeName();
     Operator operator = TestUtils.buildOperator();
     operator.setId(1);
     OperatorAttributes attributes = TestUtils.buildOperatorAttributes();
-    OperatorAttributesDTO newAttributes = newOperator.getAttributes();
+    OperatorAttributesDTO newAttributes = newOperator.attributes();
     OperatorDTO opDto = TestUtils.buildOperatorDto();
 
     when(operatorRepository.existsByCodeNameIgnoreCase(eq(codeName))).thenReturn(false);
@@ -64,11 +64,11 @@ class OperatorServiceTest {
     assertAll(
         () -> {
           assertNotNull(operatorDTO);
-          assertNotNull(operatorDTO.getAttributes());
-          assertEquals(1, operatorDTO.getId());
-          assertEquals(newOperator.getCodeName(), operatorDTO.getCodeName());
-          assertEquals(Archetype.SNIPER.getArchetype(), operatorDTO.getArchetype().getArchetype());
-          assertEquals(newAttributes.getAtk(), operatorDTO.getAttributes().getAtk());
+          assertNotNull(operatorDTO.attributes());
+          assertEquals(1, operatorDTO.id());
+          assertEquals(newOperator.codeName(), operatorDTO.codeName());
+          assertEquals(Archetype.SNIPER.getArchetype(), operatorDTO.archetype());
+          assertEquals(newAttributes.getAtk(), operatorDTO.attributes().getAtk());
         });
 
     verify(operatorRepository).existsByCodeNameIgnoreCase(eq(codeName));
@@ -84,7 +84,7 @@ class OperatorServiceTest {
   @DisplayName("should throw OperatorAlreadyExistsException when adding new operator")
   void shouldThrowOperatorAlreadyExistsExceptionWhenAddOperator() {
     NewOperatorDTO newOperator = TestUtils.buildNewOperatorDto();
-    final String codeName = newOperator.getCodeName();
+    final String codeName = newOperator.codeName();
 
     when(operatorRepository.existsByCodeNameIgnoreCase(eq(codeName))).thenReturn(true);
 
@@ -96,7 +96,7 @@ class OperatorServiceTest {
 
     verify(operatorRepository).existsByCodeNameIgnoreCase(eq(codeName));
     verify(mapper, never()).toOperator(eq(newOperator));
-    verify(mapper, never()).toOperatorAttributes(eq(newOperator.getAttributes()));
+    verify(mapper, never()).toOperatorAttributes(eq(newOperator.attributes()));
     verify(mapper, never()).toOperatorDto(any(Operator.class), any(OperatorAttributes.class));
     verify(operatorRepository, never()).save(any(Operator.class));
   }

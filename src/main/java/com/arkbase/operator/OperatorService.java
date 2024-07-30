@@ -22,13 +22,13 @@ public class OperatorService {
 
   @Transactional
   public OperatorDTO addOperator(NewOperatorDTO newOperator) throws OperatorAlreadyExistsException {
-    final String codeName = newOperator.getCodeName();
+    final String codeName = newOperator.codeName();
     if (operatorRepository.existsByCodeNameIgnoreCase(codeName)) {
       throw new OperatorAlreadyExistsException(codeName);
     }
     var operator = mapper.toOperator(newOperator);
-    operator.setAttributes(mapper.toOperatorAttributes(newOperator.getAttributes()));
-    setSkills(operator, newOperator.getSkills());
+    operator.setAttributes(mapper.toOperatorAttributes(newOperator.attributes()));
+    setSkills(operator, newOperator.skills());
     operator = operatorRepository.save(operator);
     return mapper.toOperatorDto(operator, operator.getAttributes());
   }

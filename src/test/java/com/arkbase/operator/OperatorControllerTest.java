@@ -10,10 +10,17 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.arkbase.assembler.OperatorModelAssembler;
 import com.arkbase.exception.OperatorNotFoundException;
+import com.arkbase.operator.enums.Archetype;
+import com.arkbase.operator.enums.AttackType;
+import com.arkbase.operator.enums.Position;
+import com.arkbase.operator.enums.Subclass;
+import com.arkbase.operator.enums.Trait;
 import com.arkbase.utils.TestUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
@@ -52,21 +59,28 @@ class OperatorControllerTest {
             header().exists(HttpHeaders.LOCATION),
             header()
                 .string(
-                    HttpHeaders.LOCATION,
-                    Matchers.containsString("/operators/" + operator.getId())));
+                    HttpHeaders.LOCATION, Matchers.containsString("/operators/" + operator.id())));
 
     verify(operatorService).addOperator(eq(opCreation));
   }
 
   @Test
   void shouldFailValidationWhenAddingOperator() throws Exception {
-    NewOperatorDTO opCreation = buildNewOperatorDto();
-    opCreation.setCodeName(null);
-    opCreation.setRarity("1 star");
+    NewOperatorDTO newOperator =
+        NewOperatorDTO.builder()
+            .codeName(null)
+            .archetype(Archetype.SNIPER)
+            .subclass(Subclass.ARTILLERYMAN)
+            .rarity(null)
+            .trait(Trait.ARTILLERYMAN)
+            .position(Position.RANGED)
+            .attackType(AttackType.PHYSICAL_DAMAGE)
+            .build();
+
     mvc.perform(
             post("/operators")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(opCreation)))
+                .content(objectMapper.writeValueAsString(newOperator)))
         .andExpectAll(
             status().isBadRequest(),
             header().doesNotExist(HttpHeaders.LOCATION),
@@ -76,7 +90,7 @@ class OperatorControllerTest {
             jsonPath("$.subErrors").exists(),
             jsonPath("$.subErrors.[*].field", containsInAnyOrder("rarity", "codeName")));
 
-    verify(operatorService, never()).addOperator(eq(opCreation));
+    verify(operatorService, never()).addOperator(eq(newOperator));
   }
 
   @Test
@@ -125,7 +139,7 @@ class OperatorControllerTest {
     mvc.perform(get("/operators").param("codeName", codeName))
         .andExpectAll(
             status().isOk(),
-            jsonPath("$.id", is(operatorDto.getId())),
+            jsonPath("$.id", is(operatorDto.id())),
             jsonPath("$.codeName", is(codeName)),
             jsonPath("$.attributes").exists(),
             jsonPath("$.skills").isArray());
