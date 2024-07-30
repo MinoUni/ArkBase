@@ -33,23 +33,6 @@ public class OperatorService {
     return mapper.toOperatorDto(operator, operator.getAttributes());
   }
 
-  private void setSkills(Operator operator, Set<NewSkillDTO> skills) {
-    if (skills == null || skills.isEmpty()) {
-      return;
-    }
-    skills.forEach(
-        skillDto -> {
-          Skill skill = mapper.toSkill(skillDto);
-          String name = skill.getName();
-          if (skillRepository.existsByNameIgnoreCase(name)) {
-            Skill skillRef = skillRepository.getReferenceById(skillRepository.getIdByName(name));
-            operator.addSkill(skillRef);
-          } else {
-            operator.addSkill(skill);
-          }
-        });
-  }
-
   public OperatorDTO findById(Integer id) {
     return operatorRepository
         .findById(id)
@@ -62,5 +45,21 @@ public class OperatorService {
         .findByCodeNameIgnoreCase(codeName)
         .map(operator -> mapper.toOperatorDto(operator, operator.getAttributes()))
         .orElseThrow(() -> new OperatorNotFoundException(codeName));
+  }
+
+  private void setSkills(Operator operator, Set<NewSkillDTO> skills) {
+    if (skills == null || skills.isEmpty()) {
+      return;
+    }
+    skills.forEach(
+        skillDto -> {
+          String name = skillDto.getName();
+          if (skillRepository.existsByNameIgnoreCase(name)) {
+            Skill skillRef = skillRepository.getReferenceById(skillRepository.getIdByName(name));
+            operator.addSkill(skillRef);
+          } else {
+            operator.addSkill(mapper.toSkill(skillDto));
+          }
+        });
   }
 }
