@@ -8,6 +8,10 @@ import com.arkbase.skill.Skill;
 import com.arkbase.skill.SkillRepository;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +35,15 @@ public class OperatorService {
     setSkills(operator, newOperator.skills());
     operator = operatorRepository.save(operator);
     return mapper.toOperatorDto(operator, operator.getAttributes());
+  }
+
+  public Page<OperatorDTO> findAll(int page, int size) {
+    PageRequest request = PageRequest.of(page, size, Sort.by("code_name"));
+    var list = operatorRepository.findAll(request)
+            .stream()
+            .map(operator -> mapper.toOperatorDto(operator, operator.getAttributes()))
+            .toList();
+    return new PageImpl<>(list);
   }
 
   public OperatorDTO findById(Integer id) {

@@ -3,6 +3,7 @@ package com.arkbase.operator;
 import static com.arkbase.utils.TestUtils.buildNewOperatorDto;
 import static com.arkbase.utils.TestUtils.buildOperatorDto;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
@@ -23,12 +24,15 @@ import com.arkbase.operator.enums.Subclass;
 import com.arkbase.operator.enums.Trait;
 import com.arkbase.utils.TestUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.List;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -130,40 +134,25 @@ class OperatorControllerTest {
   }
 
   @Test
-  void shouldFindOperatorByCodeName() throws Exception {
-    final String codeName = "Ray";
-    OperatorDTO operatorDto = TestUtils.buildOperatorDto();
+  void shouldFindAllOperatorsPaged() throws Exception {
+    final int page = 1;
+    final int size = 3;
+    List<OperatorDTO> list = new ArrayList<>();
+    for (int i = 0; i < size; i++) {
+      list.add(TestUtils.buildOperatorDto());
+    }
 
-    when(operatorService.findByCodeName(eq(codeName))).thenReturn(operatorDto);
+    when(operatorService.findAll(eq(page), eq(size))).thenReturn(new PageImpl<>(list));
 
-    mvc.perform(get("/operators").param("codeName", codeName))
+    mvc.perform(
+            get("/operators")
+                .param("page", String.valueOf(page))
+                .param("size", String.valueOf(size)))
         .andExpectAll(
             status().isOk(),
-            jsonPath("$.id", is(operatorDto.id())),
-            jsonPath("$.codeName", is(codeName)),
-            jsonPath("$.attributes").exists(),
-            jsonPath("$.skills").isArray());
+                jsonPath("$.content").isArray(),
+                jsonPath("$.content", hasSize(size)));
 
-    verify(operatorService).findByCodeName(eq(codeName));
-  }
-
-  @Test
-  void shouldHandleOperatorNotFoundExceptionWhenFindOperatorByCodeName() throws Exception {
-    final String codeName = "Ray";
-
-    when(operatorService.findByCodeName(eq(codeName)))
-        .thenThrow(new OperatorNotFoundException(codeName));
-
-    mvc.perform(get("/operators").param("codeName", codeName))
-        .andExpectAll(
-            status().isNotFound(),
-            jsonPath("$.status", is(HttpStatus.NOT_FOUND.name())),
-            jsonPath("$.timestamp").exists(),
-            jsonPath(
-                "$.message", is(String.format("Operator with codeName {%s} not found.", codeName))),
-            jsonPath("$.subErrors").isArray(),
-            jsonPath("$.subErrors").isEmpty());
-
-    verify(operatorService).findByCodeName(eq(codeName));
+    verify(operatorService).findAll(eq(page), eq(size));
   }
 }
