@@ -15,9 +15,11 @@ public class SkillDTO {
 
   private String name;
 
-  private String description;
+  private String effect;
 
   private Integer spCost;
+
+  private Integer spInitial;
 
   private Integer level;
 

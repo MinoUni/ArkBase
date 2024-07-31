@@ -1,12 +1,10 @@
 package com.arkbase.enums;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum Rarity {
   ONE_STAR("1★"),
   TWO_STAR("2★"),

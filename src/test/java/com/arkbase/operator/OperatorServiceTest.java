@@ -5,15 +5,23 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.arkbase.attribute.OperatorAttributes;
 import com.arkbase.exception.OperatorAlreadyExistsException;
+import com.arkbase.exception.OperatorNotFoundException;
 import com.arkbase.mapper.CustomMapper;
 import com.arkbase.operator.enums.Archetype;
 import com.arkbase.skill.NewSkillDTO;
 import com.arkbase.skill.SkillRepository;
 import com.arkbase.utils.TestUtils;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +34,7 @@ class OperatorServiceTest {
 
   private final SkillRepository skillRepository = mock(SkillRepository.class);
 
-    private final CustomMapper mapper = mock(CustomMapper.class);
+  private final CustomMapper mapper = mock(CustomMapper.class);
 
   private final OperatorService operatorService =
       new OperatorService(operatorRepository, skillRepository, mapper);
@@ -34,11 +42,11 @@ class OperatorServiceTest {
   @Test
   void shouldAddOperator() {
     NewOperatorDTO newOperator = TestUtils.buildNewOperatorDto();
-    final String codeName = newOperator.getCodeName();
+    final String codeName = newOperator.codeName();
     Operator operator = TestUtils.buildOperator();
     operator.setId(1);
     OperatorAttributes attributes = TestUtils.buildOperatorAttributes();
-    OperatorAttributesDTO newAttributes = newOperator.getAttributes();
+    OperatorAttributesDTO newAttributes = newOperator.attributes();
     OperatorDTO opDto = TestUtils.buildOperatorDto();
 
     when(operatorRepository.existsByCodeNameIgnoreCase(eq(codeName))).thenReturn(false);
@@ -56,11 +64,11 @@ class OperatorServiceTest {
     assertAll(
         () -> {
           assertNotNull(operatorDTO);
-          assertNotNull(operatorDTO.getAttributes());
-          assertEquals(1, operatorDTO.getId());
-          assertEquals(newOperator.getCodeName(), operatorDTO.getCodeName());
-          assertEquals(Archetype.SNIPER.getArchetype(), operatorDTO.getArchetype().getArchetype());
-          assertEquals(newAttributes.getAtk(), operatorDTO.getAttributes().getAtk());
+          assertNotNull(operatorDTO.attributes());
+          assertEquals(1, operatorDTO.id());
+          assertEquals(newOperator.codeName(), operatorDTO.codeName());
+          assertEquals(Archetype.SNIPER.getArchetype(), operatorDTO.archetype());
+          assertEquals(newAttributes.getAtk(), operatorDTO.attributes().getAtk());
         });
 
     verify(operatorRepository).existsByCodeNameIgnoreCase(eq(codeName));
@@ -76,7 +84,7 @@ class OperatorServiceTest {
   @DisplayName("should throw OperatorAlreadyExistsException when adding new operator")
   void shouldThrowOperatorAlreadyExistsExceptionWhenAddOperator() {
     NewOperatorDTO newOperator = TestUtils.buildNewOperatorDto();
-    final String codeName = newOperator.getCodeName();
+    final String codeName = newOperator.codeName();
 
     when(operatorRepository.existsByCodeNameIgnoreCase(eq(codeName))).thenReturn(true);
 
@@ -88,8 +96,65 @@ class OperatorServiceTest {
 
     verify(operatorRepository).existsByCodeNameIgnoreCase(eq(codeName));
     verify(mapper, never()).toOperator(eq(newOperator));
-    verify(mapper, never()).toOperatorAttributes(eq(newOperator.getAttributes()));
+    verify(mapper, never()).toOperatorAttributes(eq(newOperator.attributes()));
     verify(mapper, never()).toOperatorDto(any(Operator.class), any(OperatorAttributes.class));
     verify(operatorRepository, never()).save(any(Operator.class));
+  }
+
+  @Test
+  void shouldFindOperatorById() {
+    final int id = 1;
+    Operator operator = TestUtils.buildOperator();
+    operator.setAttributes(TestUtils.buildOperatorAttributes());
+    OperatorDTO operatorDTO = TestUtils.buildOperatorDto();
+
+    when(operatorRepository.findById(eq(id))).thenReturn(Optional.of(operator));
+    when(mapper.toOperatorDto(eq(operator), eq(operator.getAttributes()))).thenReturn(operatorDTO);
+
+    assertDoesNotThrow(() -> operatorService.findById(id));
+
+    verify(operatorRepository).findById(eq(id));
+    verify(mapper).toOperatorDto(eq(operator), eq(operator.getAttributes()));
+  }
+
+  @Test
+  void shouldThrowOperatorNotFoundExceptionWhenFindById() {
+    final int id = 1;
+
+    when(operatorRepository.findById(eq(id))).thenThrow(new OperatorNotFoundException(id));
+
+    assertThrows(OperatorNotFoundException.class, () -> operatorService.findById(id));
+
+    verify(operatorRepository).findById(eq(id));
+    verify(mapper, never()).toOperatorDto(any(Operator.class), any(OperatorAttributes.class));
+  }
+
+  @Test
+  void shouldFindOperatorByCodeName() {
+    final String codeName = "Ray";
+    Operator operator = TestUtils.buildOperator();
+    operator.setAttributes(TestUtils.buildOperatorAttributes());
+    OperatorDTO operatorDTO = TestUtils.buildOperatorDto();
+
+    when(operatorRepository.findByCodeNameIgnoreCase(eq(codeName))).thenReturn(Optional.of(operator));
+    when(mapper.toOperatorDto(eq(operator), eq(operator.getAttributes()))).thenReturn(operatorDTO);
+
+    assertDoesNotThrow(() -> operatorService.findByCodeName(codeName));
+
+    verify(operatorRepository).findByCodeNameIgnoreCase(eq(codeName));
+    verify(mapper).toOperatorDto(eq(operator), eq(operator.getAttributes()));
+  }
+
+  @Test
+  void shouldThrowOperatorNotFoundExceptionWhenFindByCodeName() {
+    final String codeName = "Ray";
+
+    when(operatorRepository.findByCodeNameIgnoreCase(eq(codeName)))
+        .thenThrow(new OperatorNotFoundException(codeName));
+
+    assertThrows(OperatorNotFoundException.class, () -> operatorService.findByCodeName(codeName));
+
+    verify(operatorRepository).findByCodeNameIgnoreCase(eq(codeName));
+    verify(mapper, never()).toOperatorDto(any(Operator.class), any(OperatorAttributes.class));
   }
 }

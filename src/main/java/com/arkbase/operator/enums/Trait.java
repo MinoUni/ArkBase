@@ -1,13 +1,11 @@
 package com.arkbase.operator.enums;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 //  ? Check if enum can be replaced by table or smth else
 @Getter
 @RequiredArgsConstructor
-@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum Trait {
   // * Caster class subclasses
   CORE_CASTER("Attack deals [Arts damage]"),

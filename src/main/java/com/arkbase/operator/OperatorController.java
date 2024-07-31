@@ -3,6 +3,7 @@ package com.arkbase.operator;
 import com.arkbase.assembler.OperatorModelAssembler;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.web.PagedModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.MediaType;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -33,11 +35,15 @@ public class OperatorController {
         .body(operatorModel);
   }
 
-  @GetMapping(
-      value = "/{id}",
-      consumes = MediaType.APPLICATION_JSON_VALUE,
-      produces = MediaType.APPLICATION_JSON_VALUE)
-  public EntityModel<OperatorDTO> findOperatorById(@PathVariable Integer id) {
-    throw new UnsupportedOperationException();
+  @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+  public PagedModel<OperatorDTO> findAll(
+      @RequestParam(name = "page", defaultValue = "0") int page,
+      @RequestParam(name = "size", defaultValue = "10") int size) {
+    return new PagedModel<>(operatorService.findAll(page, size));
+  }
+
+  @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public EntityModel<OperatorDTO> findOperatorById(@PathVariable int id) {
+    return assembler.toModel(operatorService.findById(id));
   }
 }

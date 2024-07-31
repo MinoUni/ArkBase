@@ -29,3 +29,5 @@ databaseChangeLog:
       file: db/changelog/changesets/2024/07/27_1810__add-column-quantity-to-table-skills_materials.sql
   - include:
       file: db/changelog/changesets/2024/07/29_1440__add-column-sp_initial-and-rename-column-description-into-effect-in-table-skills.sql
+  - include:
+      file: db/changelog/changesets/2024/07/29_1745_rename-columns-in-table-operator_attributes.sql
