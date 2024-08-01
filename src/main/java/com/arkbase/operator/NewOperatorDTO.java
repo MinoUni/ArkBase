@@ -10,6 +10,7 @@ import com.arkbase.skill.NewSkillDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.util.Set;
 import lombok.Builder;
 
@@ -23,4 +24,4 @@ public record NewOperatorDTO(
     @NotNull Position position,
     @NotNull AttackType attackType,
     @Valid OperatorAttributesDTO attributes,
-    @Valid Set<NewSkillDTO> skills) {}
+    @Valid @Size(max = 3) Set<NewSkillDTO> skills) {}

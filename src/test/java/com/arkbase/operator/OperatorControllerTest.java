@@ -5,15 +5,14 @@ import static com.arkbase.utils.TestUtils.buildOperatorDto;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.arkbase.assembler.OperatorModelAssembler;
 import com.arkbase.exception.OperatorNotFoundException;
@@ -22,6 +21,7 @@ import com.arkbase.operator.enums.AttackType;
 import com.arkbase.operator.enums.Position;
 import com.arkbase.operator.enums.Subclass;
 import com.arkbase.operator.enums.Trait;
+import com.arkbase.skill.NewSkillDTO;
 import com.arkbase.utils.TestUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
@@ -149,10 +149,25 @@ class OperatorControllerTest {
                 .param("page", String.valueOf(page))
                 .param("size", String.valueOf(size)))
         .andExpectAll(
-            status().isOk(),
-                jsonPath("$.content").isArray(),
-                jsonPath("$.content", hasSize(size)));
+            status().isOk(), jsonPath("$.content").isArray(), jsonPath("$.content", hasSize(size)));
 
     verify(operatorService).findAll(eq(page), eq(size));
+  }
+
+  @Test
+  void addSkillToOperator() throws Exception {
+    String skillPayload = TestUtils.readWholeFile("add-skill-to-operator-payload.json");
+    int id = 1;
+
+    when(operatorService.addSkillToOperator(eq(id), any(NewSkillDTO.class)))
+        .thenReturn(TestUtils.buildOperatorDto());
+
+    mvc.perform(
+            post(String.format("/operators/%d", id))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(skillPayload))
+        .andExpectAll(status().isCreated(), content().contentType(MediaType.APPLICATION_JSON));
+
+    verify(operatorService).addSkillToOperator(eq(id), any(NewSkillDTO.class));
   }
 }
