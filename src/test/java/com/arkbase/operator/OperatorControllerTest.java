@@ -135,8 +135,8 @@ class OperatorControllerTest {
 
   @Test
   void shouldFindAllOperatorsPaged() throws Exception {
-    final int page = 1;
-    final int size = 3;
+    int page = 1;
+    int size = 3;
     List<OperatorDTO> list = new ArrayList<>();
     for (int i = 0; i < size; i++) {
       list.add(TestUtils.buildOperatorDto());
@@ -163,7 +163,7 @@ class OperatorControllerTest {
         .thenReturn(TestUtils.buildOperatorDto());
 
     mvc.perform(
-            post(String.format("/operators/%d", id))
+            post(String.format("/operators/%d/skills", id))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(skillPayload))
         .andExpectAll(status().isCreated(), content().contentType(MediaType.APPLICATION_JSON));
