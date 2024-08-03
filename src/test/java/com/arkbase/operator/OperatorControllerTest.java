@@ -21,6 +21,8 @@ import com.arkbase.operator.enums.AttackType;
 import com.arkbase.operator.enums.Position;
 import com.arkbase.operator.enums.Subclass;
 import com.arkbase.operator.enums.Trait;
+import com.arkbase.skill.ActivationType;
+import com.arkbase.skill.ChargeType;
 import com.arkbase.skill.NewSkillDTO;
 import com.arkbase.utils.TestUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -157,17 +159,49 @@ class OperatorControllerTest {
   @Test
   void addSkillToOperator() throws Exception {
     String skillPayload = TestUtils.readWholeFile("add-skill-to-operator-payload.json");
-    int id = 1;
+    int operatorId = 1;
 
-    when(operatorService.addSkillToOperator(eq(id), any(NewSkillDTO.class)))
+    when(operatorService.addSkillToOperator(eq(operatorId), any(NewSkillDTO.class)))
         .thenReturn(TestUtils.buildOperatorDto());
 
     mvc.perform(
-            post(String.format("/operators/%d/skills", id))
+            post(String.format("/operators/%d/skills", operatorId))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(skillPayload))
         .andExpectAll(status().isCreated(), content().contentType(MediaType.APPLICATION_JSON));
 
-    verify(operatorService).addSkillToOperator(eq(id), any(NewSkillDTO.class));
+    verify(operatorService).addSkillToOperator(eq(operatorId), any(NewSkillDTO.class));
+  }
+
+  @Test
+  void shouldFailPayloadValidationWhenAddSkillToOperator() throws Exception {
+    int operatorId = 1;
+    NewSkillDTO skill =
+        NewSkillDTO.builder()
+            .name(null)
+            .effect("\n\n\n")
+            .spCost(10)
+            .spInitial(10)
+            .level(10)
+            .mastery(2)
+            .chargeType(ChargeType.PASSIVE)
+            .activationType(ActivationType.MANUAL_TRIGGER)
+            .duration(100)
+            .build();
+
+    mvc.perform(
+            post(String.format("/operators/%d/skills", operatorId))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(skill)))
+        .andExpectAll(
+            status().isBadRequest(),
+            jsonPath("$.status", is(HttpStatus.BAD_REQUEST.name())),
+            jsonPath("$.timestamp").exists(),
+            jsonPath("$.message", is("Validation failed")),
+            jsonPath("$.subErrors").isArray(),
+            jsonPath("$.subErrors", hasSize(3)),
+            jsonPath("$.subErrors[*].field", containsInAnyOrder("name", "effect", "level")));
+
+    verify(operatorService, never()).addSkillToOperator(eq(operatorId), eq(skill));
   }
 }
