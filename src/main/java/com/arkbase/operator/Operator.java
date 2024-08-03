@@ -6,6 +6,8 @@ import com.arkbase.converter.RarityConverter;
 import com.arkbase.converter.SubclassConverter;
 import com.arkbase.converter.TraitConverter;
 import com.arkbase.enums.Rarity;
+import com.arkbase.exception.OperatorSkillSlotsException;
+import com.arkbase.exception.SkillAlreadySlottedException;
 import com.arkbase.material.Material;
 import com.arkbase.operator.enums.Archetype;
 import com.arkbase.operator.enums.AttackType;
@@ -131,13 +133,32 @@ public class Operator {
   }
 
   public void addSkill(Skill skill) {
-    skills.add(skill);
+    if (skills.contains(skill)) {
+      throw new SkillAlreadySlottedException(this.id, skill.getName());
+    }
+    fillSlotAccordingToRarity(skill);
     skill.getOperators().add(this);
   }
 
   public void removeSkill(Skill skill) {
     skills.remove(skill);
     skill.getOperators().remove(this);
+  }
+
+  private void fillSlotAccordingToRarity(Skill skill) {
+    switch (rarity) {
+      case SIX_STAR -> fillFreeSlotIfPresent(3, skill);
+      case FIVE_STAR, FOUR_STAR -> fillFreeSlotIfPresent(2, skill);
+      case THREE_STAR -> fillFreeSlotIfPresent(1, skill);
+      case TWO_STAR, ONE_STAR -> throw new OperatorSkillSlotsException(this.id);
+    }
+  }
+
+  private void fillFreeSlotIfPresent(final int MAX_SLOTS, Skill skill) {
+    if (skills.size() == MAX_SLOTS) {
+      throw new OperatorSkillSlotsException(this.id);
+    }
+    skills.add(skill);
   }
 
   @Override

@@ -39,8 +39,8 @@ public class OperatorService {
 
   public Page<OperatorDTO> findAll(int page, int size) {
     PageRequest request = PageRequest.of(page, size, Sort.by("code_name"));
-    var list = operatorRepository.findAll(request)
-            .stream()
+    var list =
+        operatorRepository.findAll(request).stream()
             .map(operator -> mapper.toOperatorDto(operator, operator.getAttributes()))
             .toList();
     return new PageImpl<>(list);
@@ -60,19 +60,34 @@ public class OperatorService {
         .orElseThrow(() -> new OperatorNotFoundException(codeName));
   }
 
+  @Transactional
+  public OperatorDTO addSkillToOperator(int operatorId, NewSkillDTO skillDto) {
+    Operator operator = operatorRepository
+            .findById(operatorId)
+            .orElseThrow(() -> new OperatorNotFoundException(operatorId));
+    Skill skill = getReferenceIfExistsOrCreateNew(skillDto);
+    operator.addSkill(skill);
+    operator = operatorRepository.save(operator);
+    return mapper.toOperatorDto(operator, operator.getAttributes());
+  }
+
   private void setSkills(Operator operator, Set<NewSkillDTO> skills) {
     if (skills == null || skills.isEmpty()) {
       return;
     }
     skills.forEach(
         skillDto -> {
-          String name = skillDto.getName();
-          if (skillRepository.existsByNameIgnoreCase(name)) {
-            Skill skillRef = skillRepository.getReferenceById(skillRepository.getIdByName(name));
-            operator.addSkill(skillRef);
-          } else {
-            operator.addSkill(mapper.toSkill(skillDto));
-          }
+          Skill skill = getReferenceIfExistsOrCreateNew(skillDto);
+          operator.addSkill(skill);
         });
+  }
+
+  private Skill getReferenceIfExistsOrCreateNew(NewSkillDTO skillDto) {
+    String name = skillDto.getName();
+    if (skillRepository.existsByNameIgnoreCase(name)) {
+      Integer skillId = skillRepository.getIdByName(name);
+      return skillRepository.getReferenceById(skillId);
+    }
+    return mapper.toSkill(skillDto);
   }
 }

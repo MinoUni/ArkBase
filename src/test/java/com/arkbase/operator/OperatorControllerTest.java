@@ -5,15 +5,14 @@ import static com.arkbase.utils.TestUtils.buildOperatorDto;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.arkbase.assembler.OperatorModelAssembler;
 import com.arkbase.exception.OperatorNotFoundException;
@@ -22,6 +21,9 @@ import com.arkbase.operator.enums.AttackType;
 import com.arkbase.operator.enums.Position;
 import com.arkbase.operator.enums.Subclass;
 import com.arkbase.operator.enums.Trait;
+import com.arkbase.skill.ActivationType;
+import com.arkbase.skill.ChargeType;
+import com.arkbase.skill.NewSkillDTO;
 import com.arkbase.utils.TestUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
@@ -135,8 +137,8 @@ class OperatorControllerTest {
 
   @Test
   void shouldFindAllOperatorsPaged() throws Exception {
-    final int page = 1;
-    final int size = 3;
+    int page = 1;
+    int size = 3;
     List<OperatorDTO> list = new ArrayList<>();
     for (int i = 0; i < size; i++) {
       list.add(TestUtils.buildOperatorDto());
@@ -149,10 +151,57 @@ class OperatorControllerTest {
                 .param("page", String.valueOf(page))
                 .param("size", String.valueOf(size)))
         .andExpectAll(
-            status().isOk(),
-                jsonPath("$.content").isArray(),
-                jsonPath("$.content", hasSize(size)));
+            status().isOk(), jsonPath("$.content").isArray(), jsonPath("$.content", hasSize(size)));
 
     verify(operatorService).findAll(eq(page), eq(size));
+  }
+
+  @Test
+  void addSkillToOperator() throws Exception {
+    String skillPayload = TestUtils.readWholeFile("add-skill-to-operator-payload.json");
+    int operatorId = 1;
+
+    when(operatorService.addSkillToOperator(eq(operatorId), any(NewSkillDTO.class)))
+        .thenReturn(TestUtils.buildOperatorDto());
+
+    mvc.perform(
+            post(String.format("/operators/%d/skills", operatorId))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(skillPayload))
+        .andExpectAll(status().isCreated(), content().contentType(MediaType.APPLICATION_JSON));
+
+    verify(operatorService).addSkillToOperator(eq(operatorId), any(NewSkillDTO.class));
+  }
+
+  @Test
+  void shouldFailPayloadValidationWhenAddSkillToOperator() throws Exception {
+    int operatorId = 1;
+    NewSkillDTO skill =
+        NewSkillDTO.builder()
+            .name(null)
+            .effect("\n\n\n")
+            .spCost(10)
+            .spInitial(10)
+            .level(10)
+            .mastery(2)
+            .chargeType(ChargeType.PASSIVE)
+            .activationType(ActivationType.MANUAL_TRIGGER)
+            .duration(100)
+            .build();
+
+    mvc.perform(
+            post(String.format("/operators/%d/skills", operatorId))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(skill)))
+        .andExpectAll(
+            status().isBadRequest(),
+            jsonPath("$.status", is(HttpStatus.BAD_REQUEST.name())),
+            jsonPath("$.timestamp").exists(),
+            jsonPath("$.message", is("Validation failed")),
+            jsonPath("$.subErrors").isArray(),
+            jsonPath("$.subErrors", hasSize(3)),
+            jsonPath("$.subErrors[*].field", containsInAnyOrder("name", "effect", "level")));
+
+    verify(operatorService, never()).addSkillToOperator(eq(operatorId), eq(skill));
   }
 }

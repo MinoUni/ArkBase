@@ -1,6 +1,7 @@
 package com.arkbase.operator;
 
 import com.arkbase.assembler.OperatorModelAssembler;
+import com.arkbase.skill.NewSkillDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PagedModel;
@@ -45,5 +46,18 @@ public class OperatorController {
   @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   public EntityModel<OperatorDTO> findOperatorById(@PathVariable int id) {
     return assembler.toModel(operatorService.findById(id));
+  }
+
+  @PostMapping(
+      value = "/{id}/skills",
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<EntityModel<OperatorDTO>> addSkillToOperator(
+      @PathVariable("id") int operatorId,
+      @Valid @RequestBody NewSkillDTO skillDto) {
+    EntityModel<OperatorDTO> operatorModel =
+        assembler.toModel(operatorService.addSkillToOperator(operatorId, skillDto));
+    return ResponseEntity.created(operatorModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+        .body(operatorModel);
   }
 }

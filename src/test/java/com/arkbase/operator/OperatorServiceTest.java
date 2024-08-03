@@ -1,9 +1,7 @@
 package com.arkbase.operator;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.eq;
@@ -14,18 +12,23 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.arkbase.attribute.OperatorAttributes;
+import com.arkbase.enums.Rarity;
 import com.arkbase.exception.OperatorAlreadyExistsException;
 import com.arkbase.exception.OperatorNotFoundException;
 import com.arkbase.mapper.CustomMapper;
-import com.arkbase.operator.enums.Archetype;
 import com.arkbase.skill.NewSkillDTO;
+import com.arkbase.skill.Skill;
 import com.arkbase.skill.SkillRepository;
 import com.arkbase.utils.TestUtils;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 @ExtendWith(MockitoExtension.class)
 class OperatorServiceTest {
@@ -41,42 +44,52 @@ class OperatorServiceTest {
 
   @Test
   void shouldAddOperator() {
-    NewOperatorDTO newOperator = TestUtils.buildNewOperatorDto();
-    final String codeName = newOperator.codeName();
-    Operator operator = TestUtils.buildOperator();
-    operator.setId(1);
-    OperatorAttributes attributes = TestUtils.buildOperatorAttributes();
-    OperatorAttributesDTO newAttributes = newOperator.attributes();
-    OperatorDTO opDto = TestUtils.buildOperatorDto();
+    String codename = "Mlynar";
+    String skillNameOne = "Attack Boost Alpha";
+    String skillNameTwo = "Attack Boost Beta";
+    NewOperatorDTO newOperator =
+        NewOperatorDTO.builder()
+            .codeName(codename)
+            .rarity(Rarity.SIX_STAR)
+            .attributes(OperatorAttributesDTO.builder().build())
+            .skills(
+                Set.of(
+                    NewSkillDTO.builder().name(skillNameOne).build(),
+                    NewSkillDTO.builder().name(skillNameTwo).build()))
+            .build();
+    Operator operator =
+        Operator.builder()
+            .codeName(codename)
+            .rarity(Rarity.SIX_STAR)
+            .attributes(OperatorAttributes.builder().build())
+            .build();
+    OperatorDTO operatorDto = OperatorDTO.builder().build();
+    int skillId = 1;
+    Skill skillOne = TestUtils.buildSkill(skillNameOne);
+    Skill skillTwo = TestUtils.buildSkill(skillNameTwo);
 
-    when(operatorRepository.existsByCodeNameIgnoreCase(eq(codeName))).thenReturn(false);
+    when(operatorRepository.existsByCodeNameIgnoreCase(eq(codename))).thenReturn(false);
     when(mapper.toOperator(eq(newOperator))).thenReturn(operator);
-    when(mapper.toOperatorAttributes(eq(newAttributes))).thenReturn(attributes);
+    when(mapper.toOperatorAttributes(eq(newOperator.attributes())))
+        .thenReturn(operator.getAttributes());
+    when(skillRepository.existsByNameIgnoreCase(eq(skillNameOne))).thenReturn(true);
+    when(skillRepository.getIdByName(eq(skillNameOne))).thenReturn(skillId);
+    when(skillRepository.getReferenceById(eq(skillId))).thenReturn(skillOne);
+    when(skillRepository.existsByNameIgnoreCase(eq(skillNameTwo))).thenReturn(false);
+    when(mapper.toSkill(any(NewSkillDTO.class))).thenReturn(skillTwo);
+    when(operatorRepository.save(eq(operator))).thenReturn(operator);
+    when(mapper.toOperatorDto(eq(operator), eq(operator.getAttributes()))).thenReturn(operatorDto);
 
-    when(mapper.toSkill(any(NewSkillDTO.class))).thenReturn(TestUtils.buildSkill("SkillName"));
-    when(skillRepository.existsByNameIgnoreCase(any(String.class))).thenReturn(false);
+    assertDoesNotThrow(() -> operatorService.addOperator(newOperator));
 
-    when(operatorRepository.save(any(Operator.class))).thenReturn(operator);
-    when(mapper.toOperatorDto(eq(operator), eq(attributes))).thenReturn(opDto);
-
-    OperatorDTO operatorDTO = assertDoesNotThrow(() -> operatorService.addOperator(newOperator));
-
-    assertAll(
-        () -> {
-          assertNotNull(operatorDTO);
-          assertNotNull(operatorDTO.attributes());
-          assertEquals(1, operatorDTO.id());
-          assertEquals(newOperator.codeName(), operatorDTO.codeName());
-          assertEquals(Archetype.SNIPER.getArchetype(), operatorDTO.archetype());
-          assertEquals(newAttributes.getAtk(), operatorDTO.attributes().getAtk());
-        });
-
-    verify(operatorRepository).existsByCodeNameIgnoreCase(eq(codeName));
+    verify(operatorRepository).existsByCodeNameIgnoreCase(eq(codename));
     verify(mapper).toOperator(eq(newOperator));
-    verify(mapper).toOperatorAttributes(eq(newAttributes));
-    verify(mapper, times(3)).toSkill(any(NewSkillDTO.class));
-    verify(skillRepository, times(3)).existsByNameIgnoreCase(any(String.class));
-    verify(mapper).toOperatorDto(eq(operator), eq(attributes));
+    verify(mapper).toOperatorAttributes(eq(newOperator.attributes()));
+    verify(skillRepository, times(2)).existsByNameIgnoreCase(any(String.class));
+    verify(skillRepository).getIdByName(eq(skillNameOne));
+    verify(skillRepository).getReferenceById(eq(skillId));
+    verify(mapper).toSkill(any(NewSkillDTO.class));
+    verify(mapper).toOperatorDto(eq(operator), eq(operator.getAttributes()));
     verify(operatorRepository).save(any(Operator.class));
   }
 
@@ -136,7 +149,8 @@ class OperatorServiceTest {
     operator.setAttributes(TestUtils.buildOperatorAttributes());
     OperatorDTO operatorDTO = TestUtils.buildOperatorDto();
 
-    when(operatorRepository.findByCodeNameIgnoreCase(eq(codeName))).thenReturn(Optional.of(operator));
+    when(operatorRepository.findByCodeNameIgnoreCase(eq(codeName)))
+        .thenReturn(Optional.of(operator));
     when(mapper.toOperatorDto(eq(operator), eq(operator.getAttributes()))).thenReturn(operatorDTO);
 
     assertDoesNotThrow(() -> operatorService.findByCodeName(codeName));
@@ -156,5 +170,100 @@ class OperatorServiceTest {
 
     verify(operatorRepository).findByCodeNameIgnoreCase(eq(codeName));
     verify(mapper, never()).toOperatorDto(any(Operator.class), any(OperatorAttributes.class));
+  }
+
+  @Test
+  void shouldFindAllOperators() {
+    int page = 1;
+    int size = 3;
+    List<Operator> operators =
+        List.of(
+            Operator.builder().codeName("Ray").attributes(new OperatorAttributes()).build(),
+            Operator.builder().codeName("Mlynar").attributes(new OperatorAttributes()).build(),
+            Operator.builder().codeName("GoldenGlow").attributes(new OperatorAttributes()).build());
+
+    when(operatorRepository.findAll(any(PageRequest.class))).thenReturn(new PageImpl<>(operators));
+
+    assertDoesNotThrow(() -> operatorService.findAll(page, size));
+
+    verify(operatorRepository).findAll(any(PageRequest.class));
+    verify(mapper, times(3)).toOperatorDto(any(Operator.class), any(OperatorAttributes.class));
+  }
+
+  @Test
+  void shouldAddNewSkillToOperator() {
+    int operatorId = 1;
+    String skillName = "Attack Boost Alpha";
+    Operator operator =
+        Operator.builder().id(operatorId).codeName("Ray").rarity(Rarity.SIX_STAR).build();
+    OperatorDTO operatorDto = OperatorDTO.builder().build();
+    NewSkillDTO newSkill = NewSkillDTO.builder().name(skillName).build();
+    Skill skill = Skill.builder().name(skillName).build();
+
+    when(operatorRepository.findById(eq(operatorId))).thenReturn(Optional.of(operator));
+    when(skillRepository.existsByNameIgnoreCase(eq(skillName))).thenReturn(false);
+    when(mapper.toSkill(eq(newSkill))).thenReturn(skill);
+    when(operatorRepository.save(eq(operator))).thenReturn(operator);
+    when(mapper.toOperatorDto(eq(operator), eq(operator.getAttributes()))).thenReturn(operatorDto);
+
+    assertDoesNotThrow(() -> operatorService.addSkillToOperator(operatorId, newSkill));
+
+    verify(operatorRepository).findById(eq(operatorId));
+    verify(skillRepository).existsByNameIgnoreCase(eq(skillName));
+    verify(mapper).toSkill(eq(newSkill));
+    verify(operatorRepository).save(eq(operator));
+    verify(mapper).toOperatorDto(eq(operator), eq(operator.getAttributes()));
+  }
+
+  @Test
+  void shouldFindSkillReferenceAndAddSkillToOperator() {
+    int operatorId = 1;
+    int skillId = 2;
+    String skillName = "Attack Boost Alpha";
+    Operator operator =
+        Operator.builder().id(operatorId).codeName("Ray").rarity(Rarity.SIX_STAR).build();
+    Skill skill = Skill.builder().id(skillId).name(skillName).build();
+    OperatorDTO operatorDto = OperatorDTO.builder().build();
+    NewSkillDTO newSkill = NewSkillDTO.builder().name(skillName).build();
+
+    when(operatorRepository.findById(eq(operatorId))).thenReturn(Optional.of(operator));
+    when(skillRepository.existsByNameIgnoreCase(eq(skillName))).thenReturn(true);
+    when(skillRepository.getIdByName(eq(skillName))).thenReturn(skillId);
+    when(skillRepository.getReferenceById(eq(skillId))).thenReturn(skill);
+    when(operatorRepository.save(eq(operator))).thenReturn(operator);
+    when(mapper.toOperatorDto(eq(operator), eq(operator.getAttributes()))).thenReturn(operatorDto);
+
+    assertDoesNotThrow(() -> operatorService.addSkillToOperator(operatorId, newSkill));
+
+    verify(operatorRepository).findById(eq(operatorId));
+    verify(skillRepository).existsByNameIgnoreCase(eq(skillName));
+    verify(skillRepository).getIdByName(eq(skillName));
+    verify(skillRepository).getReferenceById(eq(skillId));
+    verify(operatorRepository).save(eq(operator));
+    verify(mapper).toOperatorDto(eq(operator), eq(operator.getAttributes()));
+  }
+
+  @Test
+  void shouldThrowOperatorNotFoundExceptionWhenAddNewSkillToOperator() {
+    int operatorId = 1;
+    NewSkillDTO newSkill = NewSkillDTO.builder().name("Attack Boost Alpha").build();
+    String exceptionMessage = String.format("Operator with id {%d} not found.", operatorId);
+
+    when(operatorRepository.findById(eq(operatorId)))
+        .thenThrow(new OperatorNotFoundException(operatorId));
+
+    var e =
+        assertThrows(
+            OperatorNotFoundException.class,
+            () -> operatorService.addSkillToOperator(operatorId, newSkill));
+
+    assertEquals(exceptionMessage, e.getMessage());
+
+    verify(operatorRepository).findById(eq(operatorId));
+    verify(skillRepository, never()).existsByNameIgnoreCase(any(String.class));
+    verify(skillRepository, never()).getIdByName(any(String.class));
+    verify(skillRepository, never()).getReferenceById(any(Integer.class));
+    verify(mapper, never()).toSkill(any(NewSkillDTO.class));
+    verify(operatorRepository, never()).save(any(Operator.class));
   }
 }
