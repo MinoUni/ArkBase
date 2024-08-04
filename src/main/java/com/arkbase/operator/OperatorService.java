@@ -2,6 +2,7 @@ package com.arkbase.operator;
 
 import com.arkbase.exception.OperatorAlreadyExistsException;
 import com.arkbase.exception.OperatorNotFoundException;
+import com.arkbase.exception.SkillNotFoundException;
 import com.arkbase.mapper.CustomMapper;
 import com.arkbase.skill.NewSkillDTO;
 import com.arkbase.skill.Skill;
@@ -62,11 +63,27 @@ public class OperatorService {
 
   @Transactional
   public OperatorDTO addSkillToOperator(int operatorId, NewSkillDTO skillDto) {
-    Operator operator = operatorRepository
+    Operator operator =
+        operatorRepository
             .findById(operatorId)
             .orElseThrow(() -> new OperatorNotFoundException(operatorId));
     Skill skill = getReferenceIfExistsOrCreateNew(skillDto);
     operator.addSkill(skill);
+    operator = operatorRepository.save(operator);
+    return mapper.toOperatorDto(operator, operator.getAttributes());
+  }
+
+  @Transactional
+  public OperatorDTO removeSkillFromOperator(int operatorId, int skillId) {
+    if (!skillRepository.existsById(skillId)) {
+      throw new SkillNotFoundException(skillId);
+    }
+    Operator operator =
+        operatorRepository
+            .findById(operatorId)
+            .orElseThrow(() -> new OperatorNotFoundException(operatorId));
+    Skill skill = skillRepository.getReferenceById(skillId);
+    operator.removeSkill(skill);
     operator = operatorRepository.save(operator);
     return mapper.toOperatorDto(operator, operator.getAttributes());
   }

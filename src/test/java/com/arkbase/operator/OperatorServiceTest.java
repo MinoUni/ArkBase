@@ -15,11 +15,13 @@ import com.arkbase.attribute.OperatorAttributes;
 import com.arkbase.enums.Rarity;
 import com.arkbase.exception.OperatorAlreadyExistsException;
 import com.arkbase.exception.OperatorNotFoundException;
+import com.arkbase.exception.SkillNotFoundException;
 import com.arkbase.mapper.CustomMapper;
 import com.arkbase.skill.NewSkillDTO;
 import com.arkbase.skill.Skill;
 import com.arkbase.skill.SkillRepository;
 import com.arkbase.utils.TestUtils;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -265,5 +267,72 @@ class OperatorServiceTest {
     verify(skillRepository, never()).getReferenceById(any(Integer.class));
     verify(mapper, never()).toSkill(any(NewSkillDTO.class));
     verify(operatorRepository, never()).save(any(Operator.class));
+  }
+
+  @Test
+  void shouldRemoveSkillFromOperator() {
+    int operatorId = 1;
+    int skillId = 1;
+    Skill skill = Skill.builder().id(skillId).name("Rapid Fire").build();
+    Operator operator =
+        Operator.builder()
+            .id(operatorId)
+            .codeName("Pozemka")
+            .rarity(Rarity.SIX_STAR)
+            .skills(new HashSet<>(List.of(skill)))
+            .attributes(new OperatorAttributes())
+            .build();
+    OperatorDTO operatorDto = OperatorDTO.builder().build();
+
+    when(skillRepository.existsById(eq(skillId))).thenReturn(true);
+    when(operatorRepository.findById(eq(operatorId))).thenReturn(Optional.of(operator));
+    when(skillRepository.getReferenceById(eq(skillId))).thenReturn(skill);
+    when(operatorRepository.save(eq(operator))).thenReturn(operator);
+    when(mapper.toOperatorDto(eq(operator), eq(operator.getAttributes()))).thenReturn(operatorDto);
+
+    assertDoesNotThrow(() -> operatorService.removeSkillFromOperator(operatorId, skillId));
+
+    verify(skillRepository).existsById(eq(skillId));
+    verify(operatorRepository).findById(eq(operatorId));
+    verify(skillRepository).getReferenceById(eq(skillId));
+    verify(operatorRepository).save(eq(operator));
+    verify(mapper).toOperatorDto(eq(operator), eq(operator.getAttributes()));
+  }
+
+  @Test
+  void shouldThrowSkillNotFoundExceptionWhenRemoveSkillFromOperator() {
+    int operatorId = 1;
+    int skillId = 1;
+    String exceptionMessage = String.format("Skill {%d} not found.", skillId);
+
+    when(skillRepository.existsById(eq(skillId))).thenReturn(false);
+
+    var e = assertThrows(SkillNotFoundException.class, () -> operatorService.removeSkillFromOperator(operatorId, skillId));
+    assertEquals(exceptionMessage, e.getMessage());
+
+    verify(skillRepository).existsById(eq(skillId));
+    verify(operatorRepository, never()).findById(eq(operatorId));
+    verify(skillRepository, never()).getReferenceById(eq(skillId));
+    verify(operatorRepository, never()).save(any(Operator.class));
+    verify(mapper, never()).toOperatorDto(any(Operator.class), any(OperatorAttributes.class));
+  }
+
+  @Test
+  void shouldThrowOperatorNotFoundExceptionWhenRemoveSkillFromOperator() {
+    int operatorId = 1;
+    int skillId = 1;
+    String exceptionMessage = String.format("Operator with id {%d} not found.", operatorId);
+
+    when(skillRepository.existsById(eq(skillId))).thenReturn(true);
+    when(operatorRepository.findById(eq(operatorId))).thenThrow(new OperatorNotFoundException(operatorId));
+
+    var e = assertThrows(OperatorNotFoundException.class, () -> operatorService.removeSkillFromOperator(operatorId, skillId));
+    assertEquals(exceptionMessage, e.getMessage());
+
+    verify(skillRepository).existsById(eq(skillId));
+    verify(operatorRepository).findById(eq(operatorId));
+    verify(skillRepository, never()).getReferenceById(eq(skillId));
+    verify(operatorRepository, never()).save(any(Operator.class));
+    verify(mapper, never()).toOperatorDto(any(Operator.class), any(OperatorAttributes.class));
   }
 }
