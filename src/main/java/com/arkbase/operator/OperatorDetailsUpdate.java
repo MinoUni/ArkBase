@@ -20,6 +20,7 @@ public record OperatorDetailsUpdate(
     AttackType attackType,
     Attributes attributes) {
 
+  @Builder
   public record Attributes(
       @PositiveOrZero Integer hp,
       @PositiveOrZero Integer atk,

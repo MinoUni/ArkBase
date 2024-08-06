@@ -67,7 +67,7 @@ public interface CustomMapper {
   MaterialDTO toMaterialDto(Material material);
 
   void updateOperatorFromDto(
-      OperatorDetailsUpdate operatorDetails, @MappingTarget Operator operator);
+      OperatorDetailsUpdate operatorUpdate, @MappingTarget Operator operator);
 
   @Mapping(target = "id", source = "operator.id")
   OperatorDetailsDTO toOperatorDetailsDto(Operator operator, OperatorAttributes attributes);

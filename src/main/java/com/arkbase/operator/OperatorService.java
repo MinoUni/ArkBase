@@ -85,9 +85,9 @@ public class OperatorService {
 
   @Transactional(isolation = Isolation.REPEATABLE_READ)
   public OperatorDetailsDTO updateOperatorDetails(
-      int operatorId, OperatorDetailsUpdate operatorDetails) {
+      int operatorId, OperatorDetailsUpdate operatorUpdate) {
     Operator operator = getOperator(operatorId);
-    mapper.updateOperatorFromDto(operatorDetails, operator);
+    mapper.updateOperatorFromDto(operatorUpdate, operator);
     operator = operatorRepository.save(operator);
     return mapper.toOperatorDetailsDto(operator, operator.getAttributes());
   }
