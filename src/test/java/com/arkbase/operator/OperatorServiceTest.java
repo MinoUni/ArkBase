@@ -335,4 +335,11 @@ class OperatorServiceTest {
     verify(operatorRepository, never()).save(any(Operator.class));
     verify(mapper, never()).toOperatorDto(any(Operator.class), any(OperatorAttributes.class));
   }
+
+  @Test
+  void shouldUpdateOperatorDetails() {
+    int operatorId = 1;
+    OperatorDetailsUpdate operatorDetails = OperatorDetailsUpdate.builder().build();
+    assertDoesNotThrow(() -> operatorService.updateOperatorDetails(operatorId, operatorDetails));
+  }
 }

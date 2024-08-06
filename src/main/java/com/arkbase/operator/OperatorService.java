@@ -107,4 +107,8 @@ public class OperatorService {
     }
     return mapper.toSkill(skillDto);
   }
+
+  public OperatorDTO updateOperatorDetails(int operatorId, OperatorDetailsUpdate operatorDetails) {
+    return mapper.toOperatorDto(null, null);
+  }
 }
