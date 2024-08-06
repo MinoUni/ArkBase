@@ -40,13 +40,15 @@ class OperatorTest {
   @Test
   void shouldThrowSkillAlreadySlottedExceptionWhenAddAlreadySlottedSkill() {
     int operatorId = 1;
+    String opCodename = "Ray";
     String skillName = "Attack Boost";
     String exceptionMessage =
-        String.format("Operator {%d} already slotted skill {%s}.", operatorId, skillName);
+        String.format("Operator {%s} already slotted skill {%s}.", opCodename, skillName);
     Skill skill = Skill.builder().name(skillName).build();
     Operator operator =
         Operator.builder()
             .id(operatorId)
+            .codeName(opCodename)
             .rarity(Rarity.SIX_STAR)
             .skills(Set.of(skill, Skill.builder().name("Camouflage").build()))
             .build();
@@ -60,9 +62,11 @@ class OperatorTest {
   @Test
   void shouldThrowOperatorSkillSlotsExceptionWhenAddSkillToOperatorWithNoFreeSkillSlots() {
     int operatorId = 1;
+    String opCodename = "Ray";
     Operator operator =
         Operator.builder()
             .id(operatorId)
+            .codeName(opCodename)
             .rarity(Rarity.FIVE_STAR)
             .skills(
                 Set.of(
@@ -71,7 +75,7 @@ class OperatorTest {
             .build();
     Skill skill = Skill.builder().name("Attack Boost").build();
     String exceptionMessage =
-        String.format("Operator {%d} has no free skill slots left.", operatorId);
+        String.format("Operator {%s} has no free skill slots left.", opCodename);
 
     var e = assertThrows(OperatorSkillSlotsException.class, () -> operator.addSkill(skill));
 

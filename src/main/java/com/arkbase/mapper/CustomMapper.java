@@ -49,6 +49,8 @@ public interface CustomMapper {
     return rarity.getRarity();
   }
 
+  @Mapping(target = "skills", ignore = true)
+  @Mapping(target = "attributes", ignore = true)
   Operator toOperator(NewOperatorDTO newOperator);
 
   OperatorAttributes toOperatorAttributes(OperatorAttributesDTO attributes);
