@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -307,7 +308,10 @@ class OperatorServiceTest {
 
     when(skillRepository.existsById(eq(skillId))).thenReturn(false);
 
-    var e = assertThrows(SkillNotFoundException.class, () -> operatorService.removeSkillFromOperator(operatorId, skillId));
+    var e =
+        assertThrows(
+            SkillNotFoundException.class,
+            () -> operatorService.removeSkillFromOperator(operatorId, skillId));
     assertEquals(exceptionMessage, e.getMessage());
 
     verify(skillRepository).existsById(eq(skillId));
@@ -324,9 +328,13 @@ class OperatorServiceTest {
     String exceptionMessage = String.format("Operator with id {%d} not found.", operatorId);
 
     when(skillRepository.existsById(eq(skillId))).thenReturn(true);
-    when(operatorRepository.findById(eq(operatorId))).thenThrow(new OperatorNotFoundException(operatorId));
+    when(operatorRepository.findById(eq(operatorId)))
+        .thenThrow(new OperatorNotFoundException(operatorId));
 
-    var e = assertThrows(OperatorNotFoundException.class, () -> operatorService.removeSkillFromOperator(operatorId, skillId));
+    var e =
+        assertThrows(
+            OperatorNotFoundException.class,
+            () -> operatorService.removeSkillFromOperator(operatorId, skillId));
     assertEquals(exceptionMessage, e.getMessage());
 
     verify(skillRepository).existsById(eq(skillId));
@@ -339,7 +347,22 @@ class OperatorServiceTest {
   @Test
   void shouldUpdateOperatorDetails() {
     int operatorId = 1;
+    OperatorAttributes attributes = new OperatorAttributes();
+    Operator operator =
+        Operator.builder().id(operatorId).codeName("Ray").attributes(attributes).build();
     OperatorDetailsUpdate operatorDetails = OperatorDetailsUpdate.builder().build();
+    OperatorDetailsDTO operatorDetailsDto = OperatorDetailsDTO.builder().build();
+
+    when(operatorRepository.findById(eq(operatorId))).thenReturn(Optional.of(operator));
+    doNothing().when(mapper).updateOperatorFromDto(eq(operatorDetails), eq(operator));
+    when(operatorRepository.save(eq(operator))).thenReturn(operator);
+    when(mapper.toOperatorDetailsDto(eq(operator), eq(attributes))).thenReturn(operatorDetailsDto);
+
     assertDoesNotThrow(() -> operatorService.updateOperatorDetails(operatorId, operatorDetails));
+
+    verify(operatorRepository).findById(eq(operatorId));
+    verify(mapper).updateOperatorFromDto(eq(operatorDetails), eq(operator));
+    verify(operatorRepository).save(eq(operator));
+    verify(mapper).toOperatorDetailsDto(eq(operator), eq(attributes));
   }
 }

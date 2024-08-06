@@ -9,6 +9,8 @@ import com.arkbase.operator.NewOperatorDTO;
 import com.arkbase.operator.Operator;
 import com.arkbase.operator.OperatorAttributesDTO;
 import com.arkbase.operator.OperatorDTO;
+import com.arkbase.operator.OperatorDetailsDTO;
+import com.arkbase.operator.OperatorDetailsUpdate;
 import com.arkbase.operator.enums.Archetype;
 import com.arkbase.operator.enums.Subclass;
 import com.arkbase.operator.enums.Trait;
@@ -18,9 +20,18 @@ import com.arkbase.skill.SkillDTO;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.ReportingPolicy;
+import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+@Mapper(
+    componentModel = MappingConstants.ComponentModel.SPRING,
+    injectionStrategy = InjectionStrategy.CONSTRUCTOR,
+    unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface CustomMapper {
+
+  CustomMapper INSTANCE = Mappers.getMapper(CustomMapper.class);
 
   default String archetypeToString(Archetype archetype) {
     return archetype.getArchetype();
@@ -38,14 +49,8 @@ public interface CustomMapper {
     return rarity.getRarity();
   }
 
-  @Mapping(target = "id", ignore = true)
-  @Mapping(target = "attributes", ignore = true)
-  @Mapping(target = "materials", ignore = true)
-  @Mapping(target = "skills", ignore = true)
   Operator toOperator(NewOperatorDTO newOperator);
 
-  @Mapping(target = "id", ignore = true)
-  @Mapping(target = "operator", ignore = true)
   OperatorAttributes toOperatorAttributes(OperatorAttributesDTO attributes);
 
   @Mapping(target = "id", source = "operator.id")
@@ -53,9 +58,6 @@ public interface CustomMapper {
 
   OperatorAttributesDTO toOperatorAttributesDto(OperatorAttributes attributes);
 
-  @Mapping(target = "id", ignore = true)
-  @Mapping(target = "materials", ignore = true)
-  @Mapping(target = "operators", ignore = true)
   Skill toSkill(NewSkillDTO newSkill);
 
   SkillDTO toSkillDto(Skill skill);
@@ -63,4 +65,10 @@ public interface CustomMapper {
   Material toMaterial(NewMaterialDTO newMaterial);
 
   MaterialDTO toMaterialDto(Material material);
+
+  void updateOperatorFromDto(
+      OperatorDetailsUpdate operatorDetails, @MappingTarget Operator operator);
+
+  @Mapping(target = "id", source = "operator.id")
+  OperatorDetailsDTO toOperatorDetailsDto(Operator operator, OperatorAttributes attributes);
 }
