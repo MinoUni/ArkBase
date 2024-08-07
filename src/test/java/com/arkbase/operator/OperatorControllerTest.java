@@ -10,7 +10,10 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -245,5 +248,35 @@ class OperatorControllerTest {
         .andExpectAll(status().isOk(), content().contentType(MediaType.APPLICATION_JSON));
 
     verify(operatorService).updateOperatorDetails(eq(opId), eq(opUpdate));
+  }
+
+  @Test
+  void shouldFailPayloadValidationWhenUpdatingOperatorDetails() throws Exception {
+    int opId = 1;
+    OperatorDetailsUpdate opUpdate =
+        OperatorDetailsUpdate.builder()
+            .codeName("Ray")
+            .rarity(Rarity.SIX_STAR)
+            .attributes(
+                OperatorDetailsUpdate.Attributes.builder().hp(-2000).atk(-1).def(-20).build())
+            .build();
+    String payloadJson = objectMapper.writeValueAsString(opUpdate);
+
+    mvc.perform(
+            patch(String.format("/operators/%d", opId))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(payloadJson))
+        .andExpectAll(
+            status().isBadRequest(),
+            jsonPath("$.status", is(HttpStatus.BAD_REQUEST.name())),
+            jsonPath("$.timestamp").exists(),
+            jsonPath("$.message", is("Validation failed")),
+            jsonPath("$.subErrors").isArray(),
+            jsonPath("$.subErrors", hasSize(3)),
+            jsonPath(
+                "$.subErrors[*].field",
+                containsInAnyOrder("attributes.hp", "attributes.atk", "attributes.def")));
+
+    verify(operatorService, never()).updateOperatorDetails(eq(opId), eq(opUpdate));
   }
 }
