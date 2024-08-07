@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -67,5 +68,15 @@ public class OperatorController {
     EntityModel<OperatorDTO> operatorModel =
         assembler.toModel(operatorService.removeSkillFromOperator(operatorId, skillId));
     return ResponseEntity.ok(operatorModel);
+  }
+
+  @PatchMapping(
+      value = "/{id}",
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<OperatorDetailsDTO> updateOperatorDetails(
+      @PathVariable("id") int operatorId,
+      @Valid @RequestBody OperatorDetailsUpdate operatorUpdate) {
+    return ResponseEntity.ok(operatorService.updateOperatorDetails(operatorId, operatorUpdate));
   }
 }

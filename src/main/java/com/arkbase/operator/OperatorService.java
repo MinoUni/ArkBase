@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -63,10 +64,7 @@ public class OperatorService {
 
   @Transactional
   public OperatorDTO addSkillToOperator(int operatorId, NewSkillDTO skillDto) {
-    Operator operator =
-        operatorRepository
-            .findById(operatorId)
-            .orElseThrow(() -> new OperatorNotFoundException(operatorId));
+    Operator operator = getOperator(operatorId);
     Skill skill = getReferenceIfExistsOrCreateNew(skillDto);
     operator.addSkill(skill);
     operator = operatorRepository.save(operator);
@@ -78,14 +76,20 @@ public class OperatorService {
     if (!skillRepository.existsById(skillId)) {
       throw new SkillNotFoundException(skillId);
     }
-    Operator operator =
-        operatorRepository
-            .findById(operatorId)
-            .orElseThrow(() -> new OperatorNotFoundException(operatorId));
+    Operator operator = getOperator(operatorId);
     Skill skill = skillRepository.getReferenceById(skillId);
     operator.removeSkill(skill);
     operator = operatorRepository.save(operator);
     return mapper.toOperatorDto(operator, operator.getAttributes());
+  }
+
+  @Transactional(isolation = Isolation.REPEATABLE_READ)
+  public OperatorDetailsDTO updateOperatorDetails(
+      int operatorId, OperatorDetailsUpdate operatorUpdate) {
+    Operator operator = getOperator(operatorId);
+    mapper.updateOperatorFromDto(operatorUpdate, operator);
+    operator = operatorRepository.save(operator);
+    return mapper.toOperatorDetailsDto(operator, operator.getAttributes());
   }
 
   private void setSkills(Operator operator, Set<NewSkillDTO> skills) {
@@ -106,5 +110,11 @@ public class OperatorService {
       return skillRepository.getReferenceById(skillId);
     }
     return mapper.toSkill(skillDto);
+  }
+
+  private Operator getOperator(int operatorId) {
+    return operatorRepository
+        .findById(operatorId)
+        .orElseThrow(() -> new OperatorNotFoundException(operatorId));
   }
 }

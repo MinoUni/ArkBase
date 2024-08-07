@@ -134,7 +134,7 @@ public class Operator {
 
   public void addSkill(Skill skill) {
     if (skills.contains(skill)) {
-      throw new SkillAlreadySlottedException(this.id, skill.getName());
+      throw new SkillAlreadySlottedException(this.codeName, skill.getName());
     }
     fillSlotAccordingToRarity(skill);
     skill.getOperators().add(this);
@@ -150,13 +150,13 @@ public class Operator {
       case SIX_STAR -> fillFreeSlotIfPresent(3, skill);
       case FIVE_STAR, FOUR_STAR -> fillFreeSlotIfPresent(2, skill);
       case THREE_STAR -> fillFreeSlotIfPresent(1, skill);
-      case TWO_STAR, ONE_STAR -> throw new OperatorSkillSlotsException(this.id);
+      case TWO_STAR, ONE_STAR -> throw new OperatorSkillSlotsException(this.codeName);
     }
   }
 
   private void fillFreeSlotIfPresent(final int MAX_SLOTS, Skill skill) {
     if (skills.size() == MAX_SLOTS) {
-      throw new OperatorSkillSlotsException(this.id);
+      throw new OperatorSkillSlotsException(this.codeName);
     }
     skills.add(skill);
   }
