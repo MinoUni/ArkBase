@@ -22,12 +22,14 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(
     componentModel = MappingConstants.ComponentModel.SPRING,
     injectionStrategy = InjectionStrategy.CONSTRUCTOR,
+    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
     unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface CustomMapper {
 
@@ -51,26 +53,25 @@ public interface CustomMapper {
 
   @Mapping(target = "skills", ignore = true)
   @Mapping(target = "attributes", ignore = true)
-  Operator toOperator(NewOperatorDTO newOperator);
+  Operator toOperator(NewOperatorDTO source);
 
-  OperatorAttributes toOperatorAttributes(OperatorAttributesDTO attributes);
+  OperatorAttributes toOperatorAttributes(OperatorAttributesDTO source);
 
   @Mapping(target = "id", source = "operator.id")
   OperatorDTO toOperatorDto(Operator operator, OperatorAttributes attributes);
 
-  OperatorAttributesDTO toOperatorAttributesDto(OperatorAttributes attributes);
+  OperatorAttributesDTO toOperatorAttributesDto(OperatorAttributes source);
 
-  Skill toSkill(NewSkillDTO newSkill);
+  Skill toSkill(NewSkillDTO source);
 
-  SkillDTO toSkillDto(Skill skill);
+  SkillDTO toSkillDto(Skill source);
 
-  Material toMaterial(NewMaterialDTO newMaterial);
+  Material toMaterial(NewMaterialDTO source);
 
-  MaterialDTO toMaterialDto(Material material);
+  MaterialDTO toMaterialDto(Material source);
 
   void updateOperatorFromDto(
-      OperatorDetailsUpdate operatorUpdate, @MappingTarget Operator operator);
+      OperatorDetailsUpdate source, @MappingTarget Operator target);
 
-  @Mapping(target = "id", source = "operator.id")
-  OperatorDetailsDTO toOperatorDetailsDto(Operator operator, OperatorAttributes attributes);
+  OperatorDetailsDTO toOperatorDetailsDto(Operator source);
 }

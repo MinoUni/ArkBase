@@ -355,13 +355,13 @@ class OperatorServiceTest {
     when(operatorRepository.findById(eq(operatorId))).thenReturn(Optional.of(operator));
     doNothing().when(mapper).updateOperatorFromDto(eq(operatorDetails), eq(operator));
     when(operatorRepository.save(eq(operator))).thenReturn(operator);
-    when(mapper.toOperatorDetailsDto(eq(operator), eq(attributes))).thenReturn(operatorDetailsDto);
+    when(mapper.toOperatorDetailsDto(eq(operator))).thenReturn(operatorDetailsDto);
 
     assertDoesNotThrow(() -> operatorService.updateOperatorDetails(operatorId, operatorDetails));
 
     verify(operatorRepository).findById(eq(operatorId));
     verify(mapper).updateOperatorFromDto(eq(operatorDetails), eq(operator));
     verify(operatorRepository).save(eq(operator));
-    verify(mapper).toOperatorDetailsDto(eq(operator), eq(attributes));
+    verify(mapper).toOperatorDetailsDto(eq(operator));
   }
 }

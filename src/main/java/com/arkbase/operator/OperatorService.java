@@ -89,7 +89,7 @@ public class OperatorService {
     Operator operator = getOperator(operatorId);
     mapper.updateOperatorFromDto(operatorUpdate, operator);
     operator = operatorRepository.save(operator);
-    return mapper.toOperatorDetailsDto(operator, operator.getAttributes());
+    return mapper.toOperatorDetailsDto(operator);
   }
 
   private void setSkills(Operator operator, Set<NewSkillDTO> skills) {
