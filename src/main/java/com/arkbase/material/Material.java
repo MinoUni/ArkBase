@@ -1,6 +1,5 @@
 package com.arkbase.material;
 
-import com.arkbase.converter.RarityConverter;
 import com.arkbase.enums.Rarity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -35,7 +34,7 @@ public class Material {
   private String name;
 
   @Column(nullable = false, length = 2)
-  @Convert(converter = RarityConverter.class)
+  @Convert(converter = MaterialRarityConverter.class)
   private Rarity rarity;
 
   @Column(nullable = false, columnDefinition = "TEXT")

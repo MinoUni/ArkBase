@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Converter
-abstract class CustomEnumConverter<X, Y> implements AttributeConverter<X, Y> {
+public abstract class CustomEnumConverter<X, Y> implements AttributeConverter<X, Y> {
 
   private final Map<Y, X> enumMap = new HashMap<>();
 
