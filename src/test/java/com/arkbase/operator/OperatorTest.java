@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.arkbase.enums.Rarity;
 import com.arkbase.exception.OperatorSkillSlotsException;
 import com.arkbase.exception.SkillAlreadySlottedException;
 import com.arkbase.skill.Skill;

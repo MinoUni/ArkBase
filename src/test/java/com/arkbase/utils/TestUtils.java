@@ -1,12 +1,12 @@
 package com.arkbase.utils;
 
 import com.arkbase.attribute.OperatorAttributes;
-import com.arkbase.enums.Rarity;
 import com.arkbase.material.NewMaterialDTO;
 import com.arkbase.operator.NewOperatorDTO;
 import com.arkbase.operator.Operator;
 import com.arkbase.operator.OperatorAttributesDTO;
 import com.arkbase.operator.OperatorDTO;
+import com.arkbase.operator.Rarity;
 import com.arkbase.operator.enums.Archetype;
 import com.arkbase.operator.enums.AttackType;
 import com.arkbase.operator.enums.Position;
@@ -62,7 +62,7 @@ public class TestUtils {
   public static NewMaterialDTO buildNewMaterialDto(String name) {
     return NewMaterialDTO.builder()
         .name(name)
-        .rarity(Rarity.FIVE_STAR)
+        .rarity(com.arkbase.enums.Rarity.FIVE_STAR)
         .description("TEXT")
         .quantity(5)
         .build();

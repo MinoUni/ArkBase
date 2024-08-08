@@ -1,0 +1,11 @@
+{
+  "codeName": "Mlynar",
+  "rarity": "FIVE_STAR",
+  "attributes": {
+    "hp": 100,
+    "atk": 100,
+    "deployCost": 20,
+    "redeployTime": "Slow",
+    "aspd": "Fast"
+  }
+}

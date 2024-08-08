@@ -20,7 +20,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.arkbase.assembler.OperatorModelAssembler;
-import com.arkbase.enums.Rarity;
 import com.arkbase.exception.OperatorNotFoundException;
 import com.arkbase.operator.enums.Archetype;
 import com.arkbase.operator.enums.AttackType;

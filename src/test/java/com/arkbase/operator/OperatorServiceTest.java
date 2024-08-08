@@ -13,7 +13,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.arkbase.attribute.OperatorAttributes;
-import com.arkbase.enums.Rarity;
 import com.arkbase.exception.OperatorAlreadyExistsException;
 import com.arkbase.exception.OperatorNotFoundException;
 import com.arkbase.exception.SkillNotFoundException;
@@ -356,13 +355,13 @@ class OperatorServiceTest {
     when(operatorRepository.findById(eq(operatorId))).thenReturn(Optional.of(operator));
     doNothing().when(mapper).updateOperatorFromDto(eq(operatorDetails), eq(operator));
     when(operatorRepository.save(eq(operator))).thenReturn(operator);
-    when(mapper.toOperatorDetailsDto(eq(operator), eq(attributes))).thenReturn(operatorDetailsDto);
+    when(mapper.toOperatorDetailsDto(eq(operator))).thenReturn(operatorDetailsDto);
 
     assertDoesNotThrow(() -> operatorService.updateOperatorDetails(operatorId, operatorDetails));
 
     verify(operatorRepository).findById(eq(operatorId));
     verify(mapper).updateOperatorFromDto(eq(operatorDetails), eq(operator));
     verify(operatorRepository).save(eq(operator));
-    verify(mapper).toOperatorDetailsDto(eq(operator), eq(attributes));
+    verify(mapper).toOperatorDetailsDto(eq(operator));
   }
 }

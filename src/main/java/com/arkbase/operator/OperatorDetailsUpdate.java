@@ -1,6 +1,5 @@
 package com.arkbase.operator;
 
-import com.arkbase.enums.Rarity;
 import com.arkbase.operator.enums.Archetype;
 import com.arkbase.operator.enums.AttackType;
 import com.arkbase.operator.enums.Position;

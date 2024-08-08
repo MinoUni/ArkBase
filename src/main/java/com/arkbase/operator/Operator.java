@@ -2,10 +2,10 @@ package com.arkbase.operator;
 
 import com.arkbase.attribute.OperatorAttributes;
 import com.arkbase.converter.ArchetypeConverter;
-import com.arkbase.converter.RarityConverter;
+import com.arkbase.converter.OperatorRarityConverter;
 import com.arkbase.converter.SubclassConverter;
 import com.arkbase.converter.TraitConverter;
-import com.arkbase.enums.Rarity;
+import com.arkbase.exception.OperatorRarityException;
 import com.arkbase.exception.OperatorSkillSlotsException;
 import com.arkbase.exception.SkillAlreadySlottedException;
 import com.arkbase.material.Material;
@@ -70,7 +70,7 @@ public class Operator {
   private Subclass subclass;
 
   @Column(nullable = false, length = 2)
-  @Convert(converter = RarityConverter.class)
+  @Convert(converter = OperatorRarityConverter.class)
   private Rarity rarity;
 
   @Column(nullable = false)
@@ -85,7 +85,6 @@ public class Operator {
   @Column(name = "attack_type", nullable = false, length = 8)
   private AttackType attackType;
 
-  @Setter(AccessLevel.NONE)
   @OneToOne(mappedBy = "operator", cascade = CascadeType.ALL, orphanRemoval = true)
   private OperatorAttributes attributes;
 
@@ -104,6 +103,13 @@ public class Operator {
       joinColumns = @JoinColumn(name = "operator_id"),
       inverseJoinColumns = @JoinColumn(name = "skill_id"))
   private Set<Skill> skills = new HashSet<>();
+
+  public void setRarity(Rarity rarity) {
+    if (rarity.getMaxSkillSlots() < skills.size()) {
+      throw new OperatorRarityException(rarity, skills.size());
+    }
+    this.rarity = rarity;
+  }
 
   public void setAttributes(OperatorAttributes attributes) {
     if (attributes == null) {
@@ -136,29 +142,16 @@ public class Operator {
     if (skills.contains(skill)) {
       throw new SkillAlreadySlottedException(this.codeName, skill.getName());
     }
-    fillSlotAccordingToRarity(skill);
+    if (skills.size() == rarity.getMaxSkillSlots()) {
+      throw new OperatorSkillSlotsException(this.codeName);
+    }
+    skills.add(skill);
     skill.getOperators().add(this);
   }
 
   public void removeSkill(Skill skill) {
     skills.remove(skill);
     skill.getOperators().remove(this);
-  }
-
-  private void fillSlotAccordingToRarity(Skill skill) {
-    switch (rarity) {
-      case SIX_STAR -> fillFreeSlotIfPresent(3, skill);
-      case FIVE_STAR, FOUR_STAR -> fillFreeSlotIfPresent(2, skill);
-      case THREE_STAR -> fillFreeSlotIfPresent(1, skill);
-      case TWO_STAR, ONE_STAR -> throw new OperatorSkillSlotsException(this.codeName);
-    }
-  }
-
-  private void fillFreeSlotIfPresent(final int MAX_SLOTS, Skill skill) {
-    if (skills.size() == MAX_SLOTS) {
-      throw new OperatorSkillSlotsException(this.codeName);
-    }
-    skills.add(skill);
   }
 
   @Override
