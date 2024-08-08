@@ -1,12 +1,12 @@
 package com.arkbase.converter;
 
-import com.arkbase.enums.Rarity;
+import com.arkbase.operator.Rarity;
 import jakarta.persistence.Converter;
 
 @Converter(autoApply = true)
-public class RarityConverter extends CustomEnumConverter<Rarity, String> {
+public class OperatorRarityConverter extends CustomEnumConverter<Rarity, String> {
 
-  public RarityConverter() {
+  public OperatorRarityConverter() {
     super(Rarity.class);
   }
 

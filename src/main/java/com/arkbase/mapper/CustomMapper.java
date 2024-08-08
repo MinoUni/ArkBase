@@ -1,7 +1,6 @@
 package com.arkbase.mapper;
 
 import com.arkbase.attribute.OperatorAttributes;
-import com.arkbase.enums.Rarity;
 import com.arkbase.material.Material;
 import com.arkbase.material.MaterialDTO;
 import com.arkbase.material.NewMaterialDTO;
@@ -11,6 +10,7 @@ import com.arkbase.operator.OperatorAttributesDTO;
 import com.arkbase.operator.OperatorDTO;
 import com.arkbase.operator.OperatorDetailsDTO;
 import com.arkbase.operator.OperatorDetailsUpdate;
+import com.arkbase.operator.Rarity;
 import com.arkbase.operator.enums.Archetype;
 import com.arkbase.operator.enums.Subclass;
 import com.arkbase.operator.enums.Trait;

@@ -13,7 +13,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.arkbase.attribute.OperatorAttributes;
-import com.arkbase.enums.Rarity;
 import com.arkbase.exception.OperatorAlreadyExistsException;
 import com.arkbase.exception.OperatorNotFoundException;
 import com.arkbase.exception.SkillNotFoundException;
