@@ -2,7 +2,9 @@ package com.arkbase.operator;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -14,6 +16,7 @@ import com.arkbase.operator.enums.Trait;
 import com.arkbase.utils.TestUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -31,12 +34,10 @@ public class OperatorIntTest {
   @Autowired private ObjectMapper jsonMapper;
 
   @Test
+  @Order(1)
   void shouldAddOperator() throws Exception {
     String newOperator = TestUtils.readWholeFile("add-operator-request.json");
-    mvc.perform(
-            post("/operators")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(newOperator))
+    mvc.perform(post("/operators").contentType(MediaType.APPLICATION_JSON).content(newOperator))
         .andExpectAll(
             status().isCreated(),
             header().exists(HttpHeaders.LOCATION),
@@ -50,5 +51,22 @@ public class OperatorIntTest {
             jsonPath("$.skills").isArray(),
             jsonPath("$.skills", hasSize(2)),
             jsonPath("$._links").exists());
+  }
+
+  @Test
+  @Order(2)
+  void shouldUpdateOperatorDetails() throws Exception {
+    int id = 1;
+    String req = TestUtils.readWholeFile("update-operator-details-request.json");
+    String resp = TestUtils.readWholeFile("update-operator-details-response.json");
+
+    mvc.perform(
+            patch(String.format("/operators/%d", id))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(req))
+        .andExpectAll(
+            status().isOk(),
+            content().contentType(MediaType.APPLICATION_JSON),
+            content().json(resp));
   }
 }
