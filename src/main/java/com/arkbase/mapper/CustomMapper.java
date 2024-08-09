@@ -1,9 +1,6 @@
 package com.arkbase.mapper;
 
 import com.arkbase.attribute.OperatorAttributes;
-import com.arkbase.material.Material;
-import com.arkbase.material.MaterialDTO;
-import com.arkbase.material.NewMaterialDTO;
 import com.arkbase.operator.NewOperatorDTO;
 import com.arkbase.operator.Operator;
 import com.arkbase.operator.OperatorAttributesDTO;
@@ -55,23 +52,20 @@ public interface CustomMapper {
   @Mapping(target = "attributes", ignore = true)
   Operator toOperator(NewOperatorDTO source);
 
-  OperatorAttributes toOperatorAttributes(OperatorAttributesDTO source);
-
   @Mapping(target = "id", source = "operator.id")
   OperatorDTO toOperatorDto(Operator operator, OperatorAttributes attributes);
+
+  OperatorDTO toOperatorDto(Operator operator);
+
+  void updateOperatorFromDto(OperatorDetailsUpdate source, @MappingTarget Operator target);
+
+  OperatorDetailsDTO toOperatorDetailsDto(Operator source);
+
+  OperatorAttributes toOperatorAttributes(OperatorAttributesDTO source);
 
   OperatorAttributesDTO toOperatorAttributesDto(OperatorAttributes source);
 
   Skill toSkill(NewSkillDTO source);
 
   SkillDTO toSkillDto(Skill source);
-
-  Material toMaterial(NewMaterialDTO source);
-
-  MaterialDTO toMaterialDto(Material source);
-
-  void updateOperatorFromDto(
-      OperatorDetailsUpdate source, @MappingTarget Operator target);
-
-  OperatorDetailsDTO toOperatorDetailsDto(Operator source);
 }
