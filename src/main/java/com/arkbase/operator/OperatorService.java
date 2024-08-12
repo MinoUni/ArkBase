@@ -71,6 +71,18 @@ public class OperatorService {
     return mapper.toOperatorDto(operator, operator.getAttributes());
   }
 
+  // TODO: Replace OperatorDTO with SkillDTO(operator doesn't change, no need fetch data from db)
+  @Transactional
+  public OperatorDTO addExistingSkillToOperator(int operatorId, int skillId) {
+    if (!skillRepository.existsById(skillId)) {
+      throw new SkillNotFoundException(skillId);
+    }
+    Operator operator = getOperator(operatorId); // replace with check by reference
+    operator.addSkill(skillRepository.getReferenceById(skillId));
+    operator = operatorRepository.save(operator);
+    return mapper.toOperatorDto(operator);
+  }
+
   @Transactional
   public OperatorDTO removeSkillFromOperator(int operatorId, int skillId) {
     if (!skillRepository.existsById(skillId)) {

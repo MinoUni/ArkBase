@@ -62,6 +62,14 @@ public class OperatorController {
         .body(operatorModel);
   }
 
+  @PostMapping(value = "/{id}/skills", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<EntityModel<OperatorDTO>> addExistingSkillToOperator(
+      @PathVariable("id") int operatorId, @RequestParam("skillId") int skillId) {
+    OperatorDTO operator = operatorService.addExistingSkillToOperator(operatorId, skillId);
+    EntityModel<OperatorDTO> operatorModel = assembler.toModel(operator);
+    return ResponseEntity.ok(operatorModel);
+  }
+
   @DeleteMapping(value = "/{id}/skills", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<EntityModel<OperatorDTO>> removeSkillFromOperator(
       @PathVariable("id") int operatorId, @RequestParam("skillId") int skillId) {

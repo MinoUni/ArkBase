@@ -93,6 +93,22 @@ public class OperatorIntTest {
 
   @Test
   @Order(5)
+  void shouldAddExistingSkillToOperator() throws Exception {
+    int operatorId = 1, skillId = 2;
+    String resp = TestUtils.readWholeFile("add-skill-to-operator-response.json");
+
+    mockMvc
+        .perform(
+            post(String.format("/operators/%d/skills", operatorId))
+                .param("skillId", String.valueOf(skillId)))
+        .andExpectAll(
+            status().isOk(),
+            content().contentType(MediaType.APPLICATION_JSON),
+            content().json(resp));
+  }
+
+  @Test
+  @Order(6)
   void shouldUpdateOperatorDetails() throws Exception {
     int id = 1;
     String req = TestUtils.readWholeFile("update-operator-details-request.json");

@@ -4,7 +4,7 @@
   "archetype": "Sniper",
   "subclass": "Hunter",
   "trait": "Attacks require ammo and increase ATK by 120%. When not attacking, gradually reload ammo (up to 8)",
-  "rarity": "5★",
+  "rarity": "6★",
   "position": "RANGED",
   "attackType": "PHYSICAL_DAMAGE",
   "attributes": {
