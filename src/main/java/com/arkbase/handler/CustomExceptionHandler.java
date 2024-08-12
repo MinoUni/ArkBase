@@ -3,6 +3,9 @@ package com.arkbase.handler;
 import com.arkbase.exception.OperatorAlreadyExistsException;
 import com.arkbase.exception.OperatorNotFoundException;
 import com.arkbase.exception.OperatorRarityException;
+import com.arkbase.exception.OperatorSkillSlotsException;
+import com.arkbase.exception.SkillAlreadySlottedException;
+import com.arkbase.exception.SkillNotFoundException;
 import java.util.List;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -45,24 +48,48 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
   @ExceptionHandler(OperatorAlreadyExistsException.class)
   public ResponseEntity<Object> handleOperatorAlreadyExistsException(
-      OperatorAlreadyExistsException e) {
+      @NonNull OperatorAlreadyExistsException e) {
     HttpStatus status = HttpStatus.CONFLICT;
     ApiError apiError = new ApiError(status, e.getMessage());
     return buildResponseEntity(status, apiError);
   }
 
   @ExceptionHandler(OperatorNotFoundException.class)
-  public ResponseEntity<Object> handleOperatorNotFoundException(OperatorNotFoundException e) {
+  public ResponseEntity<Object> handleOperatorNotFoundException(
+      @NonNull OperatorNotFoundException e) {
     HttpStatus status = HttpStatus.NOT_FOUND;
     ApiError apiError = new ApiError(status, e.getMessage());
     return buildResponseEntity(status, apiError);
   }
 
   @ExceptionHandler(OperatorRarityException.class)
-  public ResponseEntity<Object> handleOperatorRarityException(OperatorRarityException e) {
+  public ResponseEntity<Object> handleOperatorRarityException(@NonNull OperatorRarityException e) {
     HttpStatus status = HttpStatus.CONFLICT;
     ApiError apiError = new ApiError(status, e.getMessage());
     return buildResponseEntity(status, apiError);
+  }
+
+  @ExceptionHandler(OperatorSkillSlotsException.class)
+  public ResponseEntity<Object> handleOperatorSkillSlotsException(
+      @NonNull OperatorSkillSlotsException e) {
+    HttpStatus status = HttpStatus.CONFLICT;
+    ApiError error = new ApiError(status, e.getMessage());
+    return buildResponseEntity(status, error);
+  }
+
+  @ExceptionHandler(SkillAlreadySlottedException.class)
+  public ResponseEntity<Object> handleSkillAlreadySlottedException(
+      @NonNull SkillAlreadySlottedException e) {
+    HttpStatus status = HttpStatus.CONFLICT;
+    ApiError error = new ApiError(status, e.getMessage());
+    return buildResponseEntity(status, error);
+  }
+
+  @ExceptionHandler(SkillNotFoundException.class)
+  public ResponseEntity<Object> handleSkillNotFoundException(@NonNull SkillNotFoundException e) {
+    HttpStatus status = HttpStatus.NOT_FOUND;
+    ApiError error = new ApiError(status, e.getMessage());
+    return buildResponseEntity(status, error);
   }
 
   private ResponseEntity<Object> buildResponseEntity(HttpStatus status, ApiError content) {
