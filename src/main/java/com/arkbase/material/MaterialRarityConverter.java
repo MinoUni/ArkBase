@@ -1,7 +1,6 @@
 package com.arkbase.material;
 
 import com.arkbase.converter.CustomEnumConverter;
-import com.arkbase.enums.Rarity;
 import jakarta.persistence.Converter;
 
 @Converter(autoApply = true)

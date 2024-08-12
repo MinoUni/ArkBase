@@ -1,6 +1,5 @@
 package com.arkbase.material;
 
-import com.arkbase.enums.Rarity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;

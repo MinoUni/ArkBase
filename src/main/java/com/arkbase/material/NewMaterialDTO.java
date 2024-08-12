@@ -1,6 +1,5 @@
 package com.arkbase.material;
 
-import com.arkbase.enums.Rarity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

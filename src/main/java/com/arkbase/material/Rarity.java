@@ -1,4 +1,4 @@
-package com.arkbase.enums;
+package com.arkbase.material;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

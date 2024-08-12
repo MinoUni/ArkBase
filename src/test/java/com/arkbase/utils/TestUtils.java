@@ -62,7 +62,7 @@ public class TestUtils {
   public static NewMaterialDTO buildNewMaterialDto(String name) {
     return NewMaterialDTO.builder()
         .name(name)
-        .rarity(com.arkbase.enums.Rarity.FIVE_STAR)
+        .rarity(com.arkbase.material.Rarity.FIVE_STAR)
         .description("TEXT")
         .quantity(5)
         .build();
