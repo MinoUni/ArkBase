@@ -1,0 +1,11 @@
+{
+  "name": "Skill-3",
+  "effect": "TEXT",
+  "level": 7,
+  "mastery": 3,
+  "spCost": 20,
+  "spInitial": 17,
+  "duration": 10,
+  "activationType": "MANUAL_TRIGGER",
+  "chargeType": "PASSIVE"
+}
