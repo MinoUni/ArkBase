@@ -27,7 +27,7 @@ public class OperatorService {
   private final CustomMapper mapper;
 
   @Transactional
-  public OperatorDTO addOperator(NewOperatorDTO newOperator) throws OperatorAlreadyExistsException {
+  public OperatorDTO createOperator(NewOperatorDTO newOperator) {
     final String codeName = newOperator.codeName();
     if (operatorRepository.existsByCodeNameIgnoreCase(codeName)) {
       throw new OperatorAlreadyExistsException(codeName);
@@ -39,7 +39,7 @@ public class OperatorService {
     return mapper.toOperatorDto(operator, operator.getAttributes());
   }
 
-  public Page<OperatorDTO> findAll(int page, int size) {
+  public Page<OperatorDTO> findAllOperators(int page, int size) {
     PageRequest request = PageRequest.of(page, size, Sort.by("code_name"));
     var list =
         operatorRepository.findAll(request).stream()
@@ -48,14 +48,14 @@ public class OperatorService {
     return new PageImpl<>(list);
   }
 
-  public OperatorDTO findById(Integer id) {
+  public OperatorDTO findOperatorById(Integer id) {
     return operatorRepository
         .findById(id)
         .map(operator -> mapper.toOperatorDto(operator, operator.getAttributes()))
         .orElseThrow(() -> new OperatorNotFoundException(id));
   }
 
-  public OperatorDTO findByCodeName(String codeName) {
+  public OperatorDTO findOperatorByCodeName(String codeName) {
     return operatorRepository
         .findByCodeNameIgnoreCase(codeName)
         .map(operator -> mapper.toOperatorDto(operator, operator.getAttributes()))
@@ -65,7 +65,7 @@ public class OperatorService {
   @Transactional
   public OperatorDTO addSkillToOperator(int operatorId, NewSkillDTO skillDto) {
     Operator operator = getOperator(operatorId);
-    Skill skill = getReferenceIfExistsOrCreateNew(skillDto);
+    Skill skill = getSkillReferenceOrMap(skillDto);
     operator.addSkill(skill);
     operator = operatorRepository.save(operator);
     return mapper.toOperatorDto(operator, operator.getAttributes());
@@ -96,14 +96,10 @@ public class OperatorService {
     if (skills == null || skills.isEmpty()) {
       return;
     }
-    skills.forEach(
-        skillDto -> {
-          Skill skill = getReferenceIfExistsOrCreateNew(skillDto);
-          operator.addSkill(skill);
-        });
+    skills.stream().map(this::getSkillReferenceOrMap).forEach(operator::addSkill);
   }
 
-  private Skill getReferenceIfExistsOrCreateNew(NewSkillDTO skillDto) {
+  private Skill getSkillReferenceOrMap(NewSkillDTO skillDto) {
     String name = skillDto.getName();
     if (skillRepository.existsByNameIgnoreCase(name)) {
       Integer skillId = skillRepository.getIdByName(name);

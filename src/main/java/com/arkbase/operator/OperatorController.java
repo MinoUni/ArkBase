@@ -33,7 +33,7 @@ public class OperatorController {
   public ResponseEntity<EntityModel<OperatorDTO>> addOperator(
       @Valid @RequestBody NewOperatorDTO newOperator) {
     EntityModel<OperatorDTO> operatorModel =
-        assembler.toModel(operatorService.addOperator(newOperator));
+        assembler.toModel(operatorService.createOperator(newOperator));
     return ResponseEntity.created(operatorModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
         .body(operatorModel);
   }
@@ -42,12 +42,12 @@ public class OperatorController {
   public PagedModel<OperatorDTO> findAll(
       @RequestParam(name = "page", defaultValue = "0") int page,
       @RequestParam(name = "size", defaultValue = "10") int size) {
-    return new PagedModel<>(operatorService.findAll(page, size));
+    return new PagedModel<>(operatorService.findAllOperators(page, size));
   }
 
   @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   public EntityModel<OperatorDTO> findOperatorById(@PathVariable int id) {
-    return assembler.toModel(operatorService.findById(id));
+    return assembler.toModel(operatorService.findOperatorById(id));
   }
 
   @PostMapping(

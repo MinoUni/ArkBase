@@ -45,7 +45,7 @@ class OperatorServiceTest {
       new OperatorService(operatorRepository, skillRepository, mapper);
 
   @Test
-  void shouldAddOperator() {
+  void shouldCreateOperator() {
     String codename = "Mlynar";
     String skillNameOne = "Attack Boost Alpha";
     String skillNameTwo = "Attack Boost Beta";
@@ -82,7 +82,7 @@ class OperatorServiceTest {
     when(operatorRepository.save(eq(operator))).thenReturn(operator);
     when(mapper.toOperatorDto(eq(operator), eq(operator.getAttributes()))).thenReturn(operatorDto);
 
-    assertDoesNotThrow(() -> operatorService.addOperator(newOperator));
+    assertDoesNotThrow(() -> operatorService.createOperator(newOperator));
 
     verify(operatorRepository).existsByCodeNameIgnoreCase(eq(codename));
     verify(mapper).toOperator(eq(newOperator));
@@ -97,7 +97,7 @@ class OperatorServiceTest {
 
   @Test
   @DisplayName("should throw OperatorAlreadyExistsException when adding new operator")
-  void shouldThrowOperatorAlreadyExistsExceptionWhenAddOperator() {
+  void shouldThrowOperatorAlreadyExistsExceptionWhenCreateOperator() {
     NewOperatorDTO newOperator = TestUtils.buildNewOperatorDto();
     final String codeName = newOperator.codeName();
 
@@ -105,7 +105,7 @@ class OperatorServiceTest {
 
     OperatorAlreadyExistsException e =
         assertThrows(
-            OperatorAlreadyExistsException.class, () -> operatorService.addOperator(newOperator));
+            OperatorAlreadyExistsException.class, () -> operatorService.createOperator(newOperator));
 
     assertEquals(String.format("Operator {%s} already exists!", codeName), e.getMessage());
 
@@ -126,19 +126,19 @@ class OperatorServiceTest {
     when(operatorRepository.findById(eq(id))).thenReturn(Optional.of(operator));
     when(mapper.toOperatorDto(eq(operator), eq(operator.getAttributes()))).thenReturn(operatorDTO);
 
-    assertDoesNotThrow(() -> operatorService.findById(id));
+    assertDoesNotThrow(() -> operatorService.findOperatorById(id));
 
     verify(operatorRepository).findById(eq(id));
     verify(mapper).toOperatorDto(eq(operator), eq(operator.getAttributes()));
   }
 
   @Test
-  void shouldThrowOperatorNotFoundExceptionWhenFindById() {
+  void shouldThrowOperatorNotFoundExceptionWhenFindOperatorById() {
     final int id = 1;
 
     when(operatorRepository.findById(eq(id))).thenThrow(new OperatorNotFoundException(id));
 
-    assertThrows(OperatorNotFoundException.class, () -> operatorService.findById(id));
+    assertThrows(OperatorNotFoundException.class, () -> operatorService.findOperatorById(id));
 
     verify(operatorRepository).findById(eq(id));
     verify(mapper, never()).toOperatorDto(any(Operator.class), any(OperatorAttributes.class));
@@ -155,27 +155,27 @@ class OperatorServiceTest {
         .thenReturn(Optional.of(operator));
     when(mapper.toOperatorDto(eq(operator), eq(operator.getAttributes()))).thenReturn(operatorDTO);
 
-    assertDoesNotThrow(() -> operatorService.findByCodeName(codeName));
+    assertDoesNotThrow(() -> operatorService.findOperatorByCodeName(codeName));
 
     verify(operatorRepository).findByCodeNameIgnoreCase(eq(codeName));
     verify(mapper).toOperatorDto(eq(operator), eq(operator.getAttributes()));
   }
 
   @Test
-  void shouldThrowOperatorNotFoundExceptionWhenFindByCodeName() {
+  void shouldThrowOperatorNotFoundExceptionWhenFindOperatorByCodeName() {
     final String codeName = "Ray";
 
     when(operatorRepository.findByCodeNameIgnoreCase(eq(codeName)))
         .thenThrow(new OperatorNotFoundException(codeName));
 
-    assertThrows(OperatorNotFoundException.class, () -> operatorService.findByCodeName(codeName));
+    assertThrows(OperatorNotFoundException.class, () -> operatorService.findOperatorByCodeName(codeName));
 
     verify(operatorRepository).findByCodeNameIgnoreCase(eq(codeName));
     verify(mapper, never()).toOperatorDto(any(Operator.class), any(OperatorAttributes.class));
   }
 
   @Test
-  void shouldFindAllOperators() {
+  void shouldFindAllOperatorsOperators() {
     int page = 1;
     int size = 3;
     List<Operator> operators =
@@ -186,7 +186,7 @@ class OperatorServiceTest {
 
     when(operatorRepository.findAll(any(PageRequest.class))).thenReturn(new PageImpl<>(operators));
 
-    assertDoesNotThrow(() -> operatorService.findAll(page, size));
+    assertDoesNotThrow(() -> operatorService.findAllOperators(page, size));
 
     verify(operatorRepository).findAll(any(PageRequest.class));
     verify(mapper, times(3)).toOperatorDto(any(Operator.class), any(OperatorAttributes.class));

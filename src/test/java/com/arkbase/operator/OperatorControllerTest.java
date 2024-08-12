@@ -59,7 +59,7 @@ class OperatorControllerTest {
   void shouldAddOperator() throws Exception {
     NewOperatorDTO opCreation = buildNewOperatorDto();
     OperatorDTO operator = buildOperatorDto();
-    when(operatorService.addOperator(eq(opCreation))).thenReturn(operator);
+    when(operatorService.createOperator(eq(opCreation))).thenReturn(operator);
 
     mvc.perform(
             post("/operators")
@@ -72,7 +72,7 @@ class OperatorControllerTest {
                 .string(
                     HttpHeaders.LOCATION, Matchers.containsString("/operators/" + operator.id())));
 
-    verify(operatorService).addOperator(eq(opCreation));
+    verify(operatorService).createOperator(eq(opCreation));
   }
 
   @Test
@@ -101,7 +101,7 @@ class OperatorControllerTest {
             jsonPath("$.subErrors").exists(),
             jsonPath("$.subErrors.[*].field", containsInAnyOrder("rarity", "codeName")));
 
-    verify(operatorService, never()).addOperator(eq(newOperator));
+    verify(operatorService, never()).createOperator(eq(newOperator));
   }
 
   @Test
@@ -109,7 +109,7 @@ class OperatorControllerTest {
     final int id = 1;
     OperatorDTO operatorDto = TestUtils.buildOperatorDto();
 
-    when(operatorService.findById(eq(id))).thenReturn(operatorDto);
+    when(operatorService.findOperatorById(eq(id))).thenReturn(operatorDto);
 
     mvc.perform(get("/operators/" + id))
         .andExpectAll(
@@ -119,14 +119,14 @@ class OperatorControllerTest {
             jsonPath("$.attributes").exists(),
             jsonPath("$.skills").isArray());
 
-    verify(operatorService).findById(eq(id));
+    verify(operatorService).findOperatorById(eq(id));
   }
 
   @Test
   void shouldHandleOperatorNotFoundExceptionWhenFindOperatorById() throws Exception {
     final int id = 1;
 
-    when(operatorService.findById(eq(id))).thenThrow(new OperatorNotFoundException(id));
+    when(operatorService.findOperatorById(eq(id))).thenThrow(new OperatorNotFoundException(id));
 
     mvc.perform(get("/operators/" + id))
         .andExpectAll(
@@ -137,7 +137,7 @@ class OperatorControllerTest {
             jsonPath("$.subErrors").isArray(),
             jsonPath("$.subErrors").isEmpty());
 
-    verify(operatorService).findById(eq(id));
+    verify(operatorService).findOperatorById(eq(id));
   }
 
   @Test
@@ -149,7 +149,7 @@ class OperatorControllerTest {
       list.add(TestUtils.buildOperatorDto());
     }
 
-    when(operatorService.findAll(eq(page), eq(size))).thenReturn(new PageImpl<>(list));
+    when(operatorService.findAllOperators(eq(page), eq(size))).thenReturn(new PageImpl<>(list));
 
     mvc.perform(
             get("/operators")
@@ -158,7 +158,7 @@ class OperatorControllerTest {
         .andExpectAll(
             status().isOk(), jsonPath("$.content").isArray(), jsonPath("$.content", hasSize(size)));
 
-    verify(operatorService).findAll(eq(page), eq(size));
+    verify(operatorService).findAllOperators(eq(page), eq(size));
   }
 
   @Test
