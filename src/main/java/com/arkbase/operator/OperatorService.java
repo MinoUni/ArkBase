@@ -6,8 +6,11 @@ import com.arkbase.exception.SkillNotFoundException;
 import com.arkbase.mapper.CustomMapper;
 import com.arkbase.skill.NewSkillDTO;
 import com.arkbase.skill.Skill;
+import com.arkbase.skill.SkillDTO;
 import com.arkbase.skill.SkillRepository;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -84,7 +87,7 @@ public class OperatorService {
   }
 
   @Transactional
-  public OperatorDTO removeSkillFromOperator(int operatorId, int skillId) {
+  public List<SkillDTO> removeSkillFromOperator(int operatorId, int skillId) {
     if (!skillRepository.existsById(skillId)) {
       throw new SkillNotFoundException(skillId);
     }
@@ -92,7 +95,7 @@ public class OperatorService {
     Skill skill = skillRepository.getReferenceById(skillId);
     operator.removeSkill(skill);
     operator = operatorRepository.save(operator);
-    return mapper.toOperatorDto(operator, operator.getAttributes());
+    return operator.getSkills().stream().map(mapper::toSkillDto).collect(Collectors.toList());
   }
 
   @Transactional(isolation = Isolation.REPEATABLE_READ)

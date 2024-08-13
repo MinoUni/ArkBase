@@ -2,7 +2,9 @@ package com.arkbase.operator;
 
 import com.arkbase.assembler.OperatorModelAssembler;
 import com.arkbase.skill.NewSkillDTO;
+import com.arkbase.skill.SkillDTO;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PagedModel;
 import org.springframework.hateoas.EntityModel;
@@ -71,11 +73,9 @@ public class OperatorController {
   }
 
   @DeleteMapping(value = "/{id}/skills", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<EntityModel<OperatorDTO>> removeSkillFromOperator(
+  public ResponseEntity<List<SkillDTO>> removeSkillFromOperator(
       @PathVariable("id") int operatorId, @RequestParam("skillId") int skillId) {
-    EntityModel<OperatorDTO> operatorModel =
-        assembler.toModel(operatorService.removeSkillFromOperator(operatorId, skillId));
-    return ResponseEntity.ok(operatorModel);
+    return ResponseEntity.ok(operatorService.removeSkillFromOperator(operatorId, skillId));
   }
 
   @PatchMapping(

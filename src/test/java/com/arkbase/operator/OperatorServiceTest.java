@@ -19,6 +19,7 @@ import com.arkbase.exception.SkillNotFoundException;
 import com.arkbase.mapper.CustomMapper;
 import com.arkbase.skill.NewSkillDTO;
 import com.arkbase.skill.Skill;
+import com.arkbase.skill.SkillDTO;
 import com.arkbase.skill.SkillRepository;
 import com.arkbase.utils.TestUtils;
 import java.util.HashSet;
@@ -273,22 +274,22 @@ class OperatorServiceTest {
   void shouldRemoveSkillFromOperator() {
     int operatorId = 1;
     int skillId = 1;
-    Skill skill = Skill.builder().id(skillId).name("Rapid Fire").build();
+    Skill skill1 = Skill.builder().id(skillId).name("Rapid Fire").build();
+    Skill skill2 = Skill.builder().id(2).name("ATK Boost").build();
     Operator operator =
         Operator.builder()
             .id(operatorId)
             .codeName("Pozemka")
             .rarity(Rarity.SIX_STAR)
-            .skills(new HashSet<>(List.of(skill)))
+            .skills(new HashSet<>(List.of(skill1, skill2)))
             .attributes(new OperatorAttributes())
             .build();
-    OperatorDTO operatorDto = OperatorDTO.builder().build();
 
     when(skillRepository.existsById(eq(skillId))).thenReturn(true);
     when(operatorRepository.findById(eq(operatorId))).thenReturn(Optional.of(operator));
-    when(skillRepository.getReferenceById(eq(skillId))).thenReturn(skill);
+    when(skillRepository.getReferenceById(eq(skillId))).thenReturn(skill1);
     when(operatorRepository.save(eq(operator))).thenReturn(operator);
-    when(mapper.toOperatorDto(eq(operator), eq(operator.getAttributes()))).thenReturn(operatorDto);
+    when(mapper.toSkillDto(any(Skill.class))).thenReturn(any(SkillDTO.class));
 
     assertDoesNotThrow(() -> operatorService.removeSkillFromOperator(operatorId, skillId));
 
@@ -296,7 +297,7 @@ class OperatorServiceTest {
     verify(operatorRepository).findById(eq(operatorId));
     verify(skillRepository).getReferenceById(eq(skillId));
     verify(operatorRepository).save(eq(operator));
-    verify(mapper).toOperatorDto(eq(operator), eq(operator.getAttributes()));
+    verify(mapper).toSkillDto(any(Skill.class));
   }
 
   @Test
@@ -340,7 +341,7 @@ class OperatorServiceTest {
     verify(operatorRepository).findById(eq(operatorId));
     verify(skillRepository, never()).getReferenceById(eq(skillId));
     verify(operatorRepository, never()).save(any(Operator.class));
-    verify(mapper, never()).toOperatorDto(any(Operator.class), any(OperatorAttributes.class));
+    verify(mapper, never()).toSkillDto(any(Skill.class));
   }
 
   @Test

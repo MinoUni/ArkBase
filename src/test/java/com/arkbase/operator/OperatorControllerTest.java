@@ -32,6 +32,7 @@ import com.arkbase.skill.NewSkillDTO;
 import com.arkbase.utils.TestUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -212,11 +213,10 @@ class OperatorControllerTest {
 
   @Test
   void shouldRemoveSkillFromOperator() throws Exception {
-    int operatorId = 1;
-    int skillId = 1;
-    OperatorDTO operator = OperatorDTO.builder().id(operatorId).codeName("GoldenGlow").build();
+    int operatorId = 1, skillId = 1;
 
-    when(operatorService.removeSkillFromOperator(eq(operatorId), eq(skillId))).thenReturn(operator);
+    when(operatorService.removeSkillFromOperator(eq(operatorId), eq(skillId)))
+        .thenReturn(Collections.emptyList());
 
     mvc.perform(
             delete(String.format("/operators/%d/skills", operatorId))

@@ -1,46 +1,26 @@
-{
-  "id": 1,
-  "codeName": "Ray",
-  "archetype": "Sniper",
-  "subclass": "Hunter",
-  "rarity": "6★",
-  "trait": "Attacks require ammo and increase ATK by 120%. When not attacking, gradually reload ammo (up to 8)",
-  "position": "RANGED",
-  "attackType": "PHYSICAL_DAMAGE",
-  "attributes": {
-    "hp": 2000,
-    "atk": 1200,
-    "def": 100,
-    "res": 10,
-    "block": 1,
-    "deployCost": 22,
-    "redeployTime": "Slow",
-    "aspd": "Fast"
+[
+  {
+    "id": 1,
+    "name": "Skill-1",
+    "effect": "TEXT",
+    "level": 7,
+    "mastery": 3,
+    "spCost": 20,
+    "spInitial": 17,
+    "duration": 10,
+    "activationType": "MANUAL_TRIGGER",
+    "chargeType": "PASSIVE"
   },
-  "skills": [
-    {
-      "id": 1,
-      "name": "Skill-1",
-      "effect": "TEXT",
-      "level": 7,
-      "mastery": 3,
-      "spCost": 20,
-      "spInitial": 17,
-      "duration": 10,
-      "activationType": "MANUAL_TRIGGER",
-      "chargeType": "PASSIVE"
-    },
-    {
-      "id": 3,
-      "name": "Skill-3",
-      "effect": "TEXT",
-      "level": 7,
-      "mastery": 3,
-      "spCost": 20,
-      "spInitial": 17,
-      "duration": 10,
-      "activationType": "MANUAL_TRIGGER",
-      "chargeType": "PASSIVE"
-    }
-  ]
-}
+  {
+    "id": 3,
+    "name": "Skill-3",
+    "effect": "TEXT",
+    "level": 7,
+    "mastery": 3,
+    "spCost": 20,
+    "spInitial": 17,
+    "duration": 10,
+    "activationType": "MANUAL_TRIGGER",
+    "chargeType": "PASSIVE"
+  }
+]
