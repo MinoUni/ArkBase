@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PagedModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -56,20 +57,16 @@ public class OperatorController {
       value = "/{id}/skills",
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<EntityModel<OperatorDTO>> addSkillToOperator(
+  public ResponseEntity<List<SkillDTO>> addSkillToOperator(
       @PathVariable("id") int operatorId, @Valid @RequestBody NewSkillDTO skillDto) {
-    EntityModel<OperatorDTO> operatorModel =
-        assembler.toModel(operatorService.addSkillToOperator(operatorId, skillDto));
-    return ResponseEntity.created(operatorModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-        .body(operatorModel);
+    return ResponseEntity.status(HttpStatus.CREATED)
+        .body(operatorService.addSkillToOperator(operatorId, skillDto));
   }
 
   @PostMapping(value = "/{id}/skills", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<EntityModel<OperatorDTO>> addExistingSkillToOperator(
+  public ResponseEntity<List<SkillDTO>> addExistingSkillToOperator(
       @PathVariable("id") int operatorId, @RequestParam("skillId") int skillId) {
-    OperatorDTO operator = operatorService.addExistingSkillToOperator(operatorId, skillId);
-    EntityModel<OperatorDTO> operatorModel = assembler.toModel(operator);
-    return ResponseEntity.ok(operatorModel);
+    return ResponseEntity.ok(operatorService.addExistingSkillToOperator(operatorId, skillId));
   }
 
   @DeleteMapping(value = "/{id}/skills", produces = MediaType.APPLICATION_JSON_VALUE)

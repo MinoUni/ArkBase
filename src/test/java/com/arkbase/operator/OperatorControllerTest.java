@@ -168,7 +168,7 @@ class OperatorControllerTest {
     int operatorId = 1;
 
     when(operatorService.addSkillToOperator(eq(operatorId), any(NewSkillDTO.class)))
-        .thenReturn(TestUtils.buildOperatorDto());
+        .thenReturn(List.of());
 
     mvc.perform(
             post(String.format("/operators/%d/skills", operatorId))

@@ -66,24 +66,23 @@ public class OperatorService {
   }
 
   @Transactional
-  public OperatorDTO addSkillToOperator(int operatorId, NewSkillDTO skillDto) {
+  public List<SkillDTO> addSkillToOperator(int operatorId, NewSkillDTO skillDto) {
     Operator operator = getOperator(operatorId);
     Skill skill = getSkillReferenceOrMap(skillDto);
     operator.addSkill(skill);
     operator = operatorRepository.save(operator);
-    return mapper.toOperatorDto(operator, operator.getAttributes());
+    return operator.getSkills().stream().map(mapper::toSkillDto).collect(Collectors.toList());
   }
 
-  // TODO: Replace OperatorDTO with SkillDTO(operator doesn't change, no need fetch data from db)
   @Transactional
-  public OperatorDTO addExistingSkillToOperator(int operatorId, int skillId) {
+  public List<SkillDTO> addExistingSkillToOperator(int operatorId, int skillId) {
     if (!skillRepository.existsById(skillId)) {
       throw new SkillNotFoundException(skillId);
     }
-    Operator operator = getOperator(operatorId); // replace with check by reference
+    Operator operator = getOperator(operatorId);
     operator.addSkill(skillRepository.getReferenceById(skillId));
     operator = operatorRepository.save(operator);
-    return mapper.toOperatorDto(operator);
+    return operator.getSkills().stream().map(mapper::toSkillDto).collect(Collectors.toList());
   }
 
   @Transactional

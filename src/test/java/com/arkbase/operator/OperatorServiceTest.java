@@ -199,7 +199,6 @@ class OperatorServiceTest {
     String skillName = "Attack Boost Alpha";
     Operator operator =
         Operator.builder().id(operatorId).codeName("Ray").rarity(Rarity.SIX_STAR).build();
-    OperatorDTO operatorDto = OperatorDTO.builder().build();
     NewSkillDTO newSkill = NewSkillDTO.builder().name(skillName).build();
     Skill skill = Skill.builder().name(skillName).build();
 
@@ -207,7 +206,7 @@ class OperatorServiceTest {
     when(skillRepository.existsByNameIgnoreCase(eq(skillName))).thenReturn(false);
     when(mapper.toSkill(eq(newSkill))).thenReturn(skill);
     when(operatorRepository.save(eq(operator))).thenReturn(operator);
-    when(mapper.toOperatorDto(eq(operator), eq(operator.getAttributes()))).thenReturn(operatorDto);
+    when(mapper.toSkillDto(any(Skill.class))).thenReturn(any(SkillDTO.class));
 
     assertDoesNotThrow(() -> operatorService.addSkillToOperator(operatorId, newSkill));
 
@@ -215,7 +214,7 @@ class OperatorServiceTest {
     verify(skillRepository).existsByNameIgnoreCase(eq(skillName));
     verify(mapper).toSkill(eq(newSkill));
     verify(operatorRepository).save(eq(operator));
-    verify(mapper).toOperatorDto(eq(operator), eq(operator.getAttributes()));
+    verify(mapper, times(1)).toSkillDto(any(Skill.class));
   }
 
   @Test
@@ -226,7 +225,6 @@ class OperatorServiceTest {
     Operator operator =
         Operator.builder().id(operatorId).codeName("Ray").rarity(Rarity.SIX_STAR).build();
     Skill skill = Skill.builder().id(skillId).name(skillName).build();
-    OperatorDTO operatorDto = OperatorDTO.builder().build();
     NewSkillDTO newSkill = NewSkillDTO.builder().name(skillName).build();
 
     when(operatorRepository.findById(eq(operatorId))).thenReturn(Optional.of(operator));
@@ -234,7 +232,7 @@ class OperatorServiceTest {
     when(skillRepository.getIdByName(eq(skillName))).thenReturn(skillId);
     when(skillRepository.getReferenceById(eq(skillId))).thenReturn(skill);
     when(operatorRepository.save(eq(operator))).thenReturn(operator);
-    when(mapper.toOperatorDto(eq(operator), eq(operator.getAttributes()))).thenReturn(operatorDto);
+    when(mapper.toSkillDto(any(Skill.class))).thenReturn(any(SkillDTO.class));
 
     assertDoesNotThrow(() -> operatorService.addSkillToOperator(operatorId, newSkill));
 
@@ -243,7 +241,7 @@ class OperatorServiceTest {
     verify(skillRepository).getIdByName(eq(skillName));
     verify(skillRepository).getReferenceById(eq(skillId));
     verify(operatorRepository).save(eq(operator));
-    verify(mapper).toOperatorDto(eq(operator), eq(operator.getAttributes()));
+    verify(mapper, times(1)).toSkillDto(any(Skill.class));
   }
 
   @Test
