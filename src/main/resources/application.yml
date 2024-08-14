@@ -1,3 +1,9 @@
+logging:
+  level:
+    net:
+      ttddyy:
+        dsproxy:
+          listener: debug
 server:
   port: 8080
 spring:
@@ -15,7 +21,6 @@ spring:
         connection:
           provider-disables-autocommit: true
         format-sql: true
-    show-sql: true
     hibernate:
       ddl-auto: validate
   datasource:

@@ -30,6 +30,7 @@
         <java.version>21</java.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <mapstruct-processor.version>1.5.5.Final</mapstruct-processor.version>
+        <ds-proxy-spring-boot-starter.version>1.9.0</ds-proxy-spring-boot-starter.version>
     </properties>
     <dependencies>
         <dependency>
@@ -47,6 +48,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.gavlyukovskiy</groupId>
+            <artifactId>datasource-proxy-spring-boot-starter</artifactId>
+            <version>${ds-proxy-spring-boot-starter.version}</version>
         </dependency>
         <dependency>
             <groupId>org.liquibase</groupId>
