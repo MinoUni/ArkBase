@@ -1,9 +1,6 @@
 logging:
   level:
-    net:
-      ttddyy:
-        dsproxy:
-          listener: debug
+    net.ttddyy.dsproxy.listener: debug
 spring:
   application:
     name: ArkBase-Test

@@ -1,14 +1,10 @@
-logging:
-  level:
-    net:
-      ttddyy:
-        dsproxy:
-          listener: debug
 server:
   port: 8080
 spring:
   application:
     name: ArkBase
+  profiles:
+    active: dev
   liquibase:
     url: ${DB_URL}
     user: ${DB_USERNAME}
@@ -32,3 +28,19 @@ spring:
     hikari:
       pool-name: Hikari
       auto-commit: false
+
+---
+
+spring.profiles: dev
+logging:
+  level:
+    root: debug
+    net.ttddyy.dsproxy.listener: debug
+
+---
+
+spring.profiles: prod
+logging:
+  level:
+    root: info
+    net.ttddyy.dsproxy.listener: info
