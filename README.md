@@ -7,6 +7,7 @@
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [How to run](#how-to-run-locally)
+- [Database schema](#database-schema)
 - [Contributing](#contributing)
 
 ## Prerequisites
@@ -37,6 +38,10 @@ Create `Maven` with `spring-boot:run` command configuration(if you use IDE), or:
 ```bash
 ./mvnw spring-boot:run 
 ```
+
+## Database schema
+
+<img src="./docs/arkbase_v1_jpeg.jpeg" alt="Database schema ver1.0">
 
 ## Contributing
 
